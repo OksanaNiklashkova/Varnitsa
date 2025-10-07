@@ -1,0 +1,25 @@
+.custom-card {
+    border-color: #6D4C41 !important;
+    background: white;
+}
+
+.custom-image {
+    box-shadow: 0 0 0 3px #6D4C41, 0 4px 8px rgba(109, 76, 65, 0.3);
+    max-height: 400px;
+    object-fit: cover;
+}
+
+.text-brown {
+    color: #5D4037;
+}
+
+.brown-text {
+    color: #5D4037;
+    line-height: 1.6;
+}
+
+.brown-text-large {
+    color: #5D4037;
+    font-size: 1.1rem;
+    line-height: 1.5;
+}

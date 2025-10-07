@@ -1,0 +1,70 @@
+{% extends 'catalog/base.html' %}
+{% load static %}
+
+{% block title %}Главная{% endblock %}
+{% block background_class %}main-background{% endblock %}
+{% block content %}
+<div class="card border-2 rounded-4 shadow-sm mb-3 custom-card">
+    <div class="card-body p-4">
+        <div class="row align-items-start">
+            <!-- Изображение -->
+            <div class="col-md-5 col-lg-4 text-center mb-3 mb-md-0">
+                <img src="{% static 'images/catalog/58-54.png' %}"
+                     alt=""
+                     class="img-fluid rounded-3 shadow custom-image">
+            </div>
+             <!-- Текст -->
+            <div class="col-md-7 col-lg-8">
+                <div class="text-content ps-md-4">
+                    <p class="mb-3" style="color: #5D4037; font-size: 1.1rem; line-height: 1.5;">
+                        Пиво "Варница" - это сочетание современных решений и традиций пивоварения, проверенных веками.
+                    </p>
+
+                    <p class="mb-3" style="color: #5D4037; line-height: 1.6;">
+                        Наши напитки - пиво, квас, лимонады, сидр - успели завоевать доверие и любовь потребителей не только в России, но и в других странах. Вы можете встретить пиво "Варница" на полках магазинов и в барах практически всех российских городов.
+                    </p>
+
+                    <p class="mb-0" style="color: #5D4037; line-height: 1.6;">
+                        В июне 2018 года пивоваренный завод «Варница» получил сертификат соответствия системы управления требованиям международной системы HАССР CODEX ALIMENTARIUS в группе компаний SGS (SOCIETE GENERALE DE SURVEILLANCE, Швейцария).
+                    </p>
+
+                    <p class="mb-0" style="color: #5D4037; line-height: 1.6;">
+                        Данный сертификат НАССР подтверждает, что на предприятии «Варница» созданы все условия, позволяющие выполнить требования постановления Европейского парламента и совета в отношении санитарно-гигиенических правил при производстве продукции.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card border-2 rounded-4 shadow-sm mb-3" style="border-color: #6D4C41; background: white;">
+    <div class="card-body p-4">
+        <div class="row align-items-start">
+            <!-- Текст -->
+            <div class="col-md-7 col-lg-8">
+                <div class="text-content ps-md-4">
+                    <p class="mb-3" style="color: #5D4037; font-size: 1.1rem; line-height: 1.5;">
+                        Главной ценностью завода «Варница» является высокое качество готовых напитков. Натуральная сырьевая основа для производства напитков закупается у ведущих производителей России и зарубежья.
+                    </p>
+
+                    <p class="mb-3" style="color: #5D4037; line-height: 1.6;">
+                        Воду, применяемую в производстве, добывают из артезианских скважин, расположенных на территории завода, с глубины 100 метров и подвергают нескольким стадиям очистки.
+                    </p>
+
+                    <p class="mb-0" style="color: #5D4037; line-height: 1.6;">
+                        В процессах приготовления напитков завод «Варница» придерживается классических технологий. Например, для приготовления пива предприятие использует только воду, солод, дрожжи и хмель. Период брожения и дображивания пива составляет не менее 21 дня. А для приготовления лимонадов предприятие использует только воду и натуральные ингредиенты на соковой основе. Благодаря такому подходу мы создаем и производим яркие сорта напитков с натуральными запоминающимися вкусами и ароматами.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Изображение -->
+            <div class="col-md-5 col-lg-4 text-center mb-3 mb-md-0">
+                <img src="{% static 'images/catalog/Varnitsa-45.jpg' %}"
+                     alt=""
+                     class="img-fluid rounded-3 shadow w-100"
+                     style="box-shadow: 0 0 0 3px #6D4C41, 0 4px 8px rgba(109, 76, 65, 0.3); max-height: 400px; object-fit: cover;">
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
