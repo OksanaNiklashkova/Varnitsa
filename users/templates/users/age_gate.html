@@ -1,0 +1,54 @@
+{% extends 'catalog/base.html' %}
+{% load static %}
+
+{% block background_class %}age-gate-background{% endblock %}
+{% block title %}Проверка возраста{% endblock %}
+
+{% block content %}
+<div class="container d-flex flex-column justify-content-center min-vh-80 py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 text-center">
+
+            <h1 class="mb-4" style="font-family: 'Cormorant Garamond', serif; text-shadow: 2px 2px 4px rgba(0,0,0,0.5); margin-bottom: 0.5rem; line-height: 1.1;">Добро пожаловать на сайт</h1>
+            <h1 class="display-1 fw-bold text-brown" style="font-family: 'Cormorant Garamond', serif; text-shadow: 2px 2px 4px rgba(0,0,0,0.5); margin-bottom: 0.5rem; line-height: 1.1; font-size: clamp(3rem, 8vw, 5rem);">пивоваренного завода "Варница"!</h1>
+
+            {% if error %}
+            <div class="alert alert-danger my-5">
+                <h4>Вы выбрали: НЕТ</h4>
+                <p>Доступ запрещен. Обновите страницу для повторной проверки.</p>
+            </div>
+            {% else %}
+            <form method="post" class="my-5">
+                {% csrf_token %}
+
+                <div class="my-4 py-2" style="font-family: 'Cormorant Garamond', serif; text-shadow: 2px 2px 4px rgba(0,0,0,0.5); margin-bottom: 0.5rem; line-height: 1.1;">
+                    <h2>Наш сайт содержит информацию об алкогольной продукции и предназначен для лиц <strong>старше 18 лет</strong>.</h2>
+                </div>
+
+                <div class="my-4 py-2" style="font-family: 'Cormorant Garamond', serif; text-shadow: 2px 2px 4px rgba(0,0,0,0.5); margin-bottom: 0.5rem; line-height: 1.1;">
+                    <h1>Вы подтверждаете, что вам есть 18 лет?</h1>
+                </div>
+
+                <div class="my-5 pt-3" style="color: white;">
+                    <button type="submit" name="choice" value="yes"
+                            class="btn btn-success btn-lg mx-2 my-2 px-4 py-3">
+                        ✅ ДА (Есть 18)
+                    </button>
+                    <button type="submit" name="choice" value="no"
+                            class="btn btn-danger btn-lg mx-2 my-2 px-4 py-3">
+                        ❌ НЕТ (Нет 18)
+                    </button>
+                </div>
+            </form>
+            {% endif %}
+
+        </div>
+    </div>
+</div>
+
+<style>
+.min-vh-80 {
+    min-height: 80vh;
+}
+</style>
+{% endblock %}

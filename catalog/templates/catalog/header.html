@@ -1,0 +1,67 @@
+{% load static %}
+<!-- Внешний контейнер с фоном на всю ширину -->
+<div style="background: rgba(62, 39, 35); border: 1px solid #8D6E63;">
+    <!-- Внутренний контейнер с ограничением по ширине -->
+    <div class="mx-auto" style="width: 66.66%;">
+        <div class="pricing-header px-3 py-2">
+            {% if user.is_authenticated %}
+            <div class="d-flex justify-content-end align-items-center gap-2 py-1 px-3 rounded">
+                <h6 class="display-7 mb-0 text-white">Добро пожаловать, {{user.username}}!</h6>
+                <form method="post" action="{% url 'users:logout' %}">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-sm"
+                            style="color: white; background: #6D4C41; border: 1px solid #8D6E63;">Выход
+                    </button>
+                </form>
+            </div>
+            {% else %}
+            <div class="d-flex justify-content-end align-items-center gap-2 py-1 px-3 rounded">
+                <h6 class="display-7 mb-0 text-white">Добро пожаловать, Гость!</h6>
+                <a class="btn btn-sm" style="color: white; background: #6D4C41; border: 1px solid #8D6E63;"
+                   href="{% url 'users:login' %}">Вход</a>
+            </div>
+            {% endif %}
+
+            <div class="d-flex align-items-center justify-content-between my-2 ps-4">
+                <div class="logo me-4">
+                    <img width="200" height="120" src="{% static 'images/catalog/logo_Varnitsa.png' %}" alt="Логотип Варница"
+                         class="img-fluid">
+                </div>
+                <div class="text-start flex-grow-1">
+                    <h1 class="display-1 fw-bold text-white"
+                        style="font-family: 'Cormorant Garamond', serif; text-shadow: 2px 2px 4px rgba(0,0,0,0.5); margin-bottom: 0.5rem; line-height: 1.1; font-size: clamp(3rem, 8vw, 5rem);">
+                        Варница</h1>
+                    <p class="lead mb-0 fs-5 text-white"
+                       style="font-family: 'Raleway', sans-serif; font-weight: 500; text-shadow: 1px 1px 2px rgba(0,0,0,0.5);">
+                        Пиво и безалкогольные напитки высокого качества от производителя
+                    </p>
+                </div>
+            </div>
+
+            <nav class="nav nav-pills nav-justified align-items-center" style="margin: 10px; gap: 10px;">
+                <a class="btn btn-outline-light btn-lg py-3 d-flex align-items-center justify-content-center flex-fill"
+                   href="#">Завод "Варница"</a>
+
+                <div class="dropdown d-flex flex-fill">
+                    <a class="btn btn-outline-light btn-lg dropdown-toggle py-3 d-flex align-items-center justify-content-center w-100"
+                       data-bs-toggle="dropdown" href="{% url 'catalog:home' %}" role="button">
+                        Каталог
+                    </a>
+                    <ul class="dropdown-menu w-100">
+                        <li><a class="dropdown-item text-center" href="#">Разливное пиво</a></li>
+                        <li><a class="dropdown-item text-center" href="#">Бутылочное пиво</a></li>
+                        <li><a class="dropdown-item text-center" href="#">Безалкогольное пиво</a></li>
+                        <li><a class="dropdown-item text-center" href="#">Квас, лимонад</a></li>
+                        <li><a class="dropdown-item text-center" href="{% url 'catalog:home' %}">Все категории</a></li>
+                    </ul>
+                </div>
+
+                <a class="btn btn-outline-light btn-lg py-3 d-flex align-items-center justify-content-center flex-fill"
+                   href="#">Контакты</a>
+
+                <a class="btn btn-outline-light btn-lg py-3 d-flex align-items-center justify-content-center flex-fill"
+                   href="#">Блог</a>
+            </nav>
+        </div>
+    </div>
+</div>

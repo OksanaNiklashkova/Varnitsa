@@ -1,0 +1,77 @@
+/* Базовые стили для фона */
+.background-base {
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+    min-height: 100vh;
+}
+
+.background-base::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(to bottom,
+        rgba(255, 255, 255, 0.5) 0%,
+        rgba(255, 255, 255, 0.2) 100%);
+    z-index: -1;
+}
+
+/* Стили для header и footer */
+.nav-justified .nav-link,
+.nav-justified .dropdown {
+    flex: 1 1 0px;
+    margin: 10px;
+}
+
+.nav-justified .dropdown > .nav-link {
+    width: 100%;
+}
+
+.dropdown-menu {
+    background-color: #EFEBE9;
+    border: 1px solid #8D6E63;
+}
+
+.dropdown-item {
+    color: #3E2723 !important;
+    background-color: #EFEBE9;
+    border-bottom: 1px solid #D7CCC8;
+    padding: 12px 20px;
+    font-weight: 500;
+    transition: all 0.2s ease-in-out;
+}
+
+.dropdown-item:hover,
+.dropdown-item:focus {
+    color: #FFFFFF !important;
+    background-color: #8D6E63 !important;
+    transform: translateX(5px);
+}
+
+.dropdown-item:active {
+    color: #FFFFFF !important;
+    background-color: #6D4C41 !important;
+}
+
+.dropdown-item:last-child {
+    border-bottom: none;
+}
+
+.warning-alcohol__wrapper {
+    background: #fdd942;
+    bottom: 0;
+    width: 100%;
+    text-align: center;
+    text-transform: uppercase;
+    font-size: 35px;
+    padding: 10px 0;
+    z-index: 10000;
+}
+
+.min-vh-80 {
+    min-height: 80vh;
+}
