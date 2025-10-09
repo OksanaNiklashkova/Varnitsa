@@ -1,0 +1,68 @@
+{% extends 'catalog/base.html' %}
+
+{% block title %}Создание/редактирование продукта{% endblock %}
+
+{% block content %}
+<h2>{{ view.title }}</h2>
+<h3 class="display-3">{{product.product_name}}</h3>
+
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+
+    <!-- Выводим все поля КРОМЕ category -->
+    {% for field in form %}
+        {% if field.name != 'category' %}
+        <div class="form-group mb-3">
+            <label for="{{ field.id_for_label }}">{{ field.label }}:</label>
+            {{ field }}
+            {% if field.help_text %}
+                <small class="form-text text-muted">{{ field.help_text }}</small>
+            {% endif %}
+            {% for error in field.errors %}
+                <div class="alert alert-danger">{{ error }}</div>
+            {% endfor %}
+        </div>
+        {% endif %}
+    {% endfor %}
+
+
+
+    <!-- Кастомный вывод для категорий -->
+    <div class="form-group mb-3">
+        <label>Категории:</label>
+        <div class="category-checkboxes-container">
+            {% for checkbox in form.category %}
+            <div class="form-check">
+                {{ checkbox.tag }}
+                <label class="form-check-label" for="{{ checkbox.id_for_label }}">
+                    {{ checkbox.choice_label }}
+                </label>
+            </div>
+            {% endfor %}
+        </div>
+        {% for error in form.category.errors %}
+            <div class="alert alert-danger">{{ error }}</div>
+        {% endfor %}
+    </div>
+
+    <button class="btn btn-success" type="submit">Сохранить</button>
+    <a href="{% url 'catalog:products' %}" class="btn btn-secondary" style="margin: 3px;">Отменить</a>
+</form>
+
+<style>
+.category-checkboxes-container {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 8px;
+}
+.form-check {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.form-check-input {
+    margin-top: 0;
+}
+</style>
+{% endblock %}
