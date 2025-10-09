@@ -5,12 +5,12 @@
 {% block title %}Проверка возраста{% endblock %}
 
 {% block content %}
-<div class="container d-flex flex-column justify-content-center min-vh-80 py-5">
+<div class="container d-flex flex-column justify-content-center min-vh-80 py-2">
     <div class="row justify-content-center">
         <div class="col-md-8 text-center">
 
-            <h1 class="mb-4" style="font-family: 'Cormorant Garamond', serif; text-shadow: 2px 2px 4px rgba(0,0,0,0.5); margin-bottom: 0.5rem; line-height: 1.1;">Добро пожаловать на сайт</h1>
-            <h1 class="display-1 fw-bold text-brown" style="font-family: 'Cormorant Garamond', serif; text-shadow: 2px 2px 4px rgba(0,0,0,0.5); margin-bottom: 0.5rem; line-height: 1.1; font-size: clamp(3rem, 8vw, 5rem);">пивоваренного завода "Варница"!</h1>
+            <h1 class="mb-4" style="font-family: 'Cormorant Garamond', serif; text-shadow: 2px 2px 4px rgba(0,0,0,0.5); margin-bottom: 0.3rem; line-height: 1.1;">Добро пожаловать на сайт</h1>
+            <h1 class="display-1 fw-bold text-brown" style="font-family: 'Cormorant Garamond', serif; text-shadow: 2px 2px 4px rgba(0,0,0,0.5); margin-bottom: 0.3rem; line-height: 1.1; font-size: clamp(3rem, 8vw, 5rem);">пивоваренного завода "Варница"!</h1>
 
             {% if error %}
             <div class="alert alert-danger my-5">
@@ -21,15 +21,15 @@
             <form method="post" class="my-5">
                 {% csrf_token %}
 
-                <div class="my-4 py-2" style="font-family: 'Cormorant Garamond', serif; text-shadow: 2px 2px 4px rgba(0,0,0,0.5); margin-bottom: 0.5rem; line-height: 1.1;">
-                    <h2>Наш сайт содержит информацию об алкогольной продукции и предназначен для лиц <strong>старше 18 лет</strong>.</h2>
+                <div class="my-2 py-2" style="font-family: 'Cormorant Garamond', serif; text-shadow: 2px 2px 4px rgba(0,0,0,0.5); margin-bottom: 0.5rem; line-height: 1.1;">
+                    <h3>Наш сайт содержит информацию об алкогольной продукции и предназначен для лиц <strong>старше 18 лет</strong>.</h3>
                 </div>
 
-                <div class="my-4 py-2" style="font-family: 'Cormorant Garamond', serif; text-shadow: 2px 2px 4px rgba(0,0,0,0.5); margin-bottom: 0.5rem; line-height: 1.1;">
+                <div class="my-2 py-1" style="font-family: 'Cormorant Garamond', serif; text-shadow: 2px 2px 4px rgba(0,0,0,0.5); margin-bottom: 0.5rem; line-height: 1.1;">
                     <h1>Вы подтверждаете, что вам есть 18 лет?</h1>
                 </div>
 
-                <div class="my-5 pt-3" style="color: white;">
+                <div class="my-2 pt-1" style="color: white;">
                     <button type="submit" name="choice" value="yes"
                             class="btn btn-success btn-lg mx-2 my-2 px-4 py-3">
                         ✅ ДА (Есть 18)
