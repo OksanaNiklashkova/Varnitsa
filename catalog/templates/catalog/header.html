@@ -1,14 +1,10 @@
 {% load static %}
-<!-- Внешний контейнер с фоном на всю ширину -->
-<div style="background: rgba(62, 39, 35); border: 1px solid #8D6E63;">
-    <!-- Внутренний контейнер с ограничением по ширине -->
+<div class="header-with-wave" style="background: rgba(62, 39, 35); border: 1px solid #8D6E63; position: fixed; top: 0; width: 100%; z-index: 1000;">
     <div class="mx-auto" style="width: 66.66%;">
         <div class="pricing-header px-3 py-2">
-
-
             <div class="d-flex align-items-center justify-content-between my-2 ps-4">
                 <div class="logo me-4">
-                    <img width="200" height="120" src="{% static 'images/catalog/logo_Varnitsa.png' %}" alt="Логотип Варница"
+                    <img width="220" height="140" src="{% static 'images/catalog/logo_Varnitsa.png' %}" alt="Логотип Варница"
                          class="img-fluid">
                 </div>
                 <div class="text-start flex-grow-1">
@@ -36,19 +32,21 @@
 
             <nav class="nav nav-pills nav-justified align-items-center" style="margin: 10px; gap: 10px;">
                 <a class="btn btn-outline-light btn-lg py-3 d-flex align-items-center justify-content-center flex-fill"
-                   href="#">Завод "Варница"</a>
+                   href="{% url 'catalog:home' %}">Главная</a>
+                <a class="btn btn-outline-light btn-lg py-3 d-flex align-items-center justify-content-center flex-fill"
+                   href="{% url 'blog:info_list' %}">Завод "Варница"</a>
 
                 <div class="dropdown d-flex flex-fill">
                     <a class="btn btn-outline-light btn-lg dropdown-toggle py-3 d-flex align-items-center justify-content-center w-100"
-                       data-bs-toggle="dropdown" href="{% url 'catalog:home' %}" role="button">
+                       data-bs-toggle="dropdown" href="{% url 'catalog:products' %}" role="button">
                         Каталог
                     </a>
                     <ul class="dropdown-menu w-100">
+                        <li><a class="dropdown-item text-center" href="{% url 'catalog:products' %}">Все категории</a></li>
                         <li><a class="dropdown-item text-center" href="{% url 'catalog:products' 1 %}">Разливные напитки</a></li>
                         <li><a class="dropdown-item text-center" href="{% url 'catalog:products' 2 %}">Фасованные напитки</a></li>
                         <li><a class="dropdown-item text-center" href="{% url 'catalog:products' 3 %}">Безалкогольное пиво</a></li>
                         <li><a class="dropdown-item text-center" href="{% url 'catalog:products' 4 %}">Квас, лимонад</a></li>
-                        <li><a class="dropdown-item text-center" href="{% url 'catalog:products' %}">Все категории</a></li>
                     </ul>
                 </div>
 
@@ -56,7 +54,7 @@
                    href="#">Контакты</a>
 
                 <a class="btn btn-outline-light btn-lg py-3 d-flex align-items-center justify-content-center flex-fill"
-                   href="#">Блог</a>
+                   href="{% url 'blog:publication_list' %}">Блог</a>
             </nav>
         </div>
     </div>

@@ -1,0 +1,77 @@
+<div class="col-12 mb-4">
+    <div class="card custom-card">
+        <div class="row g-0">
+            {% if image_position == 'left' %}
+            <!-- Изображение слева -->
+            <div class="col-md-4 col-lg-4">
+                <div class="h-100 d-flex align-items-center justify-content-center p-3" style="background:
+                        radial-gradient(circle at 20% 80%, rgba(255, 107, 107, 0.8), transparent 70%),
+                        linear-gradient(to bottom, white, #FFEAA7, #C04000, white); min-height: 250px;">
+                    <img src="{{ publication.preview.url }}"
+                         class="img-fluid rounded-start"
+                         alt="{{ publication.title }}"
+                         style="max-height: 220px; width: auto; border: solid brown 2px;">
+                </div>
+            </div>
+            <!-- Контент справа -->
+            <div class="col-md-8 col-lg-8">
+                <div class="card-body h-100 d-flex flex-column">
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                        <h5 class="card-title" style="color: #A52A2A;">{{ publication.title }}</h5>
+                        {% if user.is_authenticated %}
+                        <a href="{% url 'blog:publication_detail' publication.pk %}" class="btn btn-sm btn-warning">Перейти
+                            к заметке</a>
+                        {% endif %}
+                    </div>
+
+                    <div class="flex-grow-1">
+                        {% if publication.rubric %}
+                        <p class="mb-1" style="color: #5D4037; font-weight: 500;">{{ publication.rubric}}</p>
+                        {% endif %}
+
+                        <div style="color: #5D4037; line-height: 1.5; font-size: 0.9rem;">
+                            {{ publication.text|linebreaks }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% else %}
+            <!-- Контент слева -->
+            <div class="col-md-8 col-lg-8">
+                <div class="card-body h-100 d-flex flex-column">
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                        <h5 class="card-title" style="color: #A52A2A;">{{ publication.title }}</h5>
+                        {% if user.is_authenticated %}
+                        <a href="{% url 'blog:publication_detail' publication.pk %}" class="btn btn-sm btn-warning">Перейти
+                            к заметке</a>
+                        {% endif %}
+                    </div>
+
+                    <div class="flex-grow-1">
+                        {% if publication.rubric %}
+                        <p class="mb-1" style="color: #5D4037; font-weight: 500;">{{ publication.rubric}}</p>
+                        {% endif %}
+
+                        <div style="color: #5D4037; line-height: 1.5; font-size: 0.9rem;">
+                            {{ publication.text|linebreaks }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Изображение справа -->
+            <div class="col-md-4 col-lg-4">
+                <div class="h-100 d-flex align-items-center justify-content-center p-3" style="background:
+                        radial-gradient(circle at 20% 80%, rgba(255, 107, 107, 0.8), transparent 70%),
+                        linear-gradient(to bottom, white, #FFEAA7, #C04000, white); min-height: 250px;">
+                    <img src="{{ publication.preview.url }}"
+                         class="img-fluid rounded-start"
+                         alt="{{ publication.title }}"
+                         style="max-height: 220px; width: auto; border: solid brown 2px;">
+                </div>
+
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>

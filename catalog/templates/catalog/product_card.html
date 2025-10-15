@@ -1,15 +1,18 @@
 {% extends 'catalog/base.html' %}
 
-{% block title %}{{product.category}}/{{product.product_name}}{% endblock %}
+{% block title %}Варница:
+{% if current_category %}{{product.category}}/{% endif %}
+{{product.product_name}}{% endblock %}
+
 
 {% block content %}
-<div class="card border-2 rounded-4 shadow-sm mb-3 custom-card">
+<div class="card border-2 rounded-4 shadow-md mb-3 custom-card">
     <div class="card-body d-flex flex-column">
         <!-- Основной контент -->
         <div class="flex-grow-1">
             <div class="row align-items-center">
                 <!-- Изображение -->
-                <div class="col-md-5 col-lg-4 text-center mb-3 mb-md-0" style="background: radial-gradient(ellipse at center, white, #D63031, #C04000, #FEFBEA); padding: 40px 20px;">
+                <div class="col-md-5 col-lg-4 text-center mb-3 mb-md-0 product-image-container" style="padding: 40px 20px;">
                     <img src="/media/{{ product.image }}"
                          alt=""
                          class="img-fluid rounded-3 shadow custom-image">
@@ -44,7 +47,7 @@
                 <a href="{% url 'catalog:form' product.pk %}" class="btn" style="color: black; background: #F3E5AB;">Редактировать</a>
                 <a href="{% url 'catalog:delete' product.pk %}" class="btn" style="color: black; background: #CD4A4A;">Удалить</a>
                 {% endif %}
-                <a href="{% url 'catalog:home' %}" class="btn" style="color: white; background: rgba(62, 39, 35);">Вернуться к списку</a>
+                <a href="{% url 'catalog:products' %}" class="btn" style="color: white; background: rgba(62, 39, 35);">Вернуться к списку</a>
             </div>
         </div>
     </div>

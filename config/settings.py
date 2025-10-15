@@ -2,6 +2,8 @@ import os
 import dotenv
 from pathlib import Path
 
+from django.urls import reverse_lazy
+
 dotenv.load_dotenv(override=True)
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -104,3 +106,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+LOGIN_REDIRECT_URL = reverse_lazy("catalog:home")
+LOGOUT_REDIRECT_URL = reverse_lazy("catalog:home")
+LOGIN_URL = reverse_lazy("users:login")
