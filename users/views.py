@@ -17,7 +17,7 @@ class AgeGateView(TemplateView):
 
         if choice == 'yes':
             request.session['age_verified'] = True
-            request.session.set_expiry(60 * 60 * 24)     # 1 сутки
+            request.session.set_expiry(60*60)     # 1 час
             next_page = request.GET.get('next', 'catalog:home')
             return redirect(next_page)
 

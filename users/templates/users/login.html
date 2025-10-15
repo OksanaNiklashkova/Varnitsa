@@ -1,0 +1,15 @@
+{% extends 'catalog/base.html' %}
+
+{% block title %}Вход на сайт{% endblock %}
+
+{% block content %}
+<div class="pricing-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
+    <h2 class="display-4">Вход на сайт</h2>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <p><button type="submit" class="btn btn-block" style="background: #A52A2A; color: white;">Войти</button></p>
+        <p><a href="#" type="submit" class="btn btn-block" style="background: #A52A2A; color: white;">Забыли пароль?</a></p>
+    </form>
+</div>
+{% endblock %}

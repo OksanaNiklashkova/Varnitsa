@@ -14,6 +14,6 @@ class PhotoInline(admin.TabularInline):
 @admin.register(Publication)
 class PublicationAdmin(admin.ModelAdmin):
     inlines = [PhotoInline]
-    list_display = ('title', 'created_at', 'is_published', 'views_counter')
+    list_display = ('title', 'created_at', 'is_published', 'publication_type')
     list_filter = ('is_published', 'created_at')
     search_fields = ('title', 'text')

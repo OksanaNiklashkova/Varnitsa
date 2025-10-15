@@ -2,15 +2,30 @@ from django.db import models
 
 class Publication(models.Model):
     """Модель записи в блоге"""
+    PUBLICATION_TYPES = [
+        ('full', 'Статья для блога'),
+        ('small', 'Заметка'),
+    ]
+
     title = models.CharField(max_length=150, verbose_name='Заголовок')
+    rubric = models.CharField(max_length=150, blank=True, null=True, verbose_name='Рубрика')
     text = models.TextField(verbose_name='Текст')
     preview = models.ImageField(null=True, upload_to='images/blog/preview/', verbose_name='Превью')
     created_at = models.DateTimeField(auto_now_add=True, verbose_name='Дата создания')
     is_published = models.BooleanField(default=True, verbose_name='Признак публикации')
     views_counter = models.IntegerField(default=0, verbose_name='Счетчик просмотров')
+    publication_type = models.CharField(
+        max_length=10,
+        choices=PUBLICATION_TYPES,
+        default='full',
+        verbose_name = 'Тип статьи'
+    )
 
     def __str__(self):
         return f'{self.title} (опубликовано {self.created_at})'
+
+    def is_small_publication(self):
+        return self.publication_type == 'small'
 
     class Meta:
         verbose_name = 'публикация'

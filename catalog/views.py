@@ -42,6 +42,9 @@ class ProductByCategoryListView(AgeVerificationRequiredMixin, ListView):
     model = Product
     template_name = 'catalog/products.html'
     context_object_name = 'products'
+    paginate_by = 10
+    paginate_orphans = 2
+    page_kwarg = 'page'
 
     def get_queryset(self):
         category_id = self.kwargs['category']
@@ -60,6 +63,9 @@ class AllProductsListView(AgeVerificationRequiredMixin, ListView):
     model = Product
     template_name = 'catalog/products.html'
     context_object_name = 'products'
+    paginate_by = 10
+    paginate_orphans = 2
+    page_kwarg = 'page'
 
     def get_queryset(self):
         return Product.objects.filter(is_published=True).prefetch_related('category')

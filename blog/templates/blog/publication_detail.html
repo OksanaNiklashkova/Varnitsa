@@ -1,0 +1,80 @@
+{% extends 'catalog/base.html' %}
+{% load static %}
+{% block background_class %}blog-background{% endblock %}
+{% block title %}
+{{ publication.title }}
+{% endblock %}
+
+{% block content %}
+<div class="container" style="color: #A52A2A;">
+    <nav aria-label="breadcrumb" class="mb-4">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'blog:publication_list' %}" style="color: #A52A2A;">Блог</a></li>
+            <li class="breadcrumb-item active">{{ publication.title }}</li>
+        </ol>
+    </nav>
+
+    <!-- Основной блок статьи -->
+    <div class="card mb-5" style="border: 2px solid #A52A2A; box-shadow: 5px 5px 10px rgba(165, 42, 42, 0.3); background: linear-gradient(to bottom, #FFEAA7, white,  #C04000, white);">
+        <div class="card-body p-4">
+            <!-- Заголовок статьи -->
+            <header class="mb-3">
+                {% if publication.rubric %}
+                <span class="badge bg-warning text-dark mb-2"><strong>{{ publication.rubric }}</strong></span>
+                {% endif %}
+                <h1 class="display-6 mb-2 text-brown"><strong>{{ publication.title }}</strong></h1>
+                <div class="text-muted small">
+                    Опубликовано: {{ publication.created_at|date:"d.m.Y H:i" }} |
+                    Просмотров: {{ publication.views_counter }}
+                </div>
+            </header>
+
+            <div class="row g-4">
+                <!-- Левая колонка с фото -->
+                <div class="col-md-4 col-lg-3">
+                    <div class="d-flex flex-column gap-3">
+                        {% if publication.preview %}
+                        <!-- Превью фото -->
+                        <div class="text-center mt-4">
+                            <img src="{{ publication.preview.url }}" alt="{{ publication.title }}"
+                                 class="img-fluid rounded"
+                                 style="border: 2px solid #A52A2A; max-height: 300px; object-fit: cover; width: 100%;">
+                        </div>
+                        {% endif %}
+
+                        <!-- Дополнительные фото -->
+                        {% for photo in photos %}
+                        <div class="text-center mt-4">
+                            <img src="{{ photo.image.url }}" class="img-fluid rounded"
+                                 alt="{{ photo.caption|default:publication.title }}"
+                                 style="border: 2px solid #A52A2A; height: 200px; object-fit: cover; width: 100%;">
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <!-- Правая колонка с текстом -->
+                <div class="col-md-8 col-lg-9">
+                    <div class="publication-content" style="line-height: 1.8; font-size: 1.1rem; padding: 5px; background: white; border: 3px solid #8B4513; border-radius: 15px;">
+                        {{ publication.text|linebreaks }}
+                    </div>
+                    <!-- Кнопки навигации -->
+                    <div class="d-flex justify-content-between align-items-center mt-3 p-3">
+                        <a href="{% url 'blog:publication_list' %}" class="btn"
+                           style="background: #A52A2A; color: white;">← Назад к списку статей</a>
+                        {% if user.is_authenticated %}
+                        <a href="{% url 'blog:info_list' %}" class="btn btn-success">← на страницу "Завод Варница"</a>
+                        <a href="{% url 'blog:publication_update' publication.pk %}" class="btn btn-warning">Редактировать</a>
+                        <a href="{% url 'blog:publication_delete' publication.pk %}" class="btn btn-danger">Удалить
+                            статью</a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</div>
+
+{% endblock %}

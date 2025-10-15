@@ -9,7 +9,7 @@ class AgeVerificationRequiredMixin:
     def dispatch(self, request, *args, **kwargs):
         if not request.session.get('age_verified', False):
             messages.info(request, "Пожалуйста, подтвердите ваш возраст для доступа к сайту")
-            return redirect('age_gate')
+            return redirect('users:age_gate')
         return super().dispatch(request, *args, **kwargs)
 
 
