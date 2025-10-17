@@ -1,0 +1,119 @@
+{% extends 'catalog/base.html' %}
+{% load static %}
+{% block title %}Варница: контакты{% endblock %}
+
+{% block content %}
+<div class="contacts-page">
+    <!-- Заголовок -->
+    <div class="text-center mb-2">
+        <h1 class="contact-title">Как с нами связаться</h1>
+        <div class="contact-divider"></div>
+    </div>
+
+    <!-- Основной контент в двух колонках -->
+    <div class="contact-layout">
+        <!-- Левая колонка - контактные блоки -->
+        <div class="contact-column">
+            <div class="contact-card">
+                <div class="contact-icon">
+                    <i class="fas fa-map-marker-alt"></i>
+                </div>
+                <div class="contact-details">
+                    <h3>Наш адрес</h3>
+                    <p class="contact-text-large">
+                        215850, Смоленская область, Кардымовский район,<br>
+                        пгт Кардымово, улица Ленина, дом 55а
+                    </p>
+                </div>
+            </div>
+
+            <div class="contact-card">
+                <div class="contact-icon">
+                    <i class="fas fa-phone"></i>
+                </div>
+                <div class="contact-details">
+                    <h3>Телефоны</h3>
+                    <div class="phone-numbers">
+                        <a href="tel:+74816741093" class="contact-phone">+7 (48167) 4-10-93</a>
+                        <a href="tel:+74816741084" class="contact-phone">+7 (48167) 4-10-84</a>
+                        <a href="tel:+79107202798" class="contact-phone">+7 (910) 720-27-98</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="contact-card">
+                <div class="contact-icon">
+                    <i class="fas fa-envelope"></i>
+                </div>
+                <div class="contact-details">
+                    <h3>Электронная почта</h3>
+                    <a href="mailto:n.grebeshkova@varnitsa.ru" class="contact-email">
+                        n.grebeshkova@varnitsa.ru
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Правая колонка - причины и кнопка -->
+        <div class="reasons-column">
+            <div class="contact-card">
+                <div class="contact-icon">
+                    <i class="fas fa-clock"></i>
+                </div>
+                <div class="contact-details">
+                    <h3>Время работы</h3>
+                    <p class="contact-text-large">
+                        пн-пт с 8:00 до 16:30<br>
+                        сб-вс - выходные
+                    </p>
+                </div>
+            </div>
+
+            <!-- Блок причин -->
+            <div class="reasons-card">
+
+                <div class="reasons-content">
+                <div class="contact-icon">
+                    <i class="fas fa-question-circle"></i>
+                </div>
+                    <h3>Если вы хотите</h3>
+                    <div class="reasons-list">
+                        <div class="reason-item">
+                            <span class="reason-icon">•</span>
+                            <span class="reason-text">оставить отзыв о нашей продукции</span>
+                        </div>
+                        <div class="reason-item">
+                            <span class="reason-icon">•</span>
+                            <span class="reason-text">узнать, где можно купить напитки "Варница"</span>
+                        </div>
+                        <div class="reason-item">
+                            <span class="reason-icon">•</span>
+                            <span class="reason-text">продавать наше пиво в своем регионе</span>
+                        </div>
+
+                        <div class="reason-item">
+                            <span class="reason-icon">•</span>
+                            <span class="reason-text">предложить нам сотрудничество как поставщик</span>
+                        </div>
+                        <div class="reason-item">
+                            <span class="reason-icon">•</span>
+                            <span class="reason-text">или у вас есть какой-то другой вопрос</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+     <!-- Кнопка обратной связи -->
+            <div class="contact-action-section">
+                <a href="{% url 'contacts:request_form' %}" class="btn-contact-main">
+                    <span class="btn-icon">✉️</span>
+                    Напишите нам!
+                </a>
+            </div>
+</div>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+{% endblock %}

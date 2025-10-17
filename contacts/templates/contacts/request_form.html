@@ -1,0 +1,132 @@
+{% extends 'catalog/base.html' %}
+{% load static %}
+{% block title %}Варница: форма обращения{% endblock %}
+
+{% block content %}
+<div class="contact-form-container">
+    <h2>Форма обращения</h2>
+
+
+    <form method="post" enctype="multipart/form-data" id="contactForm">
+        {% csrf_token %}
+        {% if form.errors %}
+<div class="alert alert-danger">
+    <strong>Ошибки в форме:</strong>
+    <ul>
+    {% for field in form %}
+        {% for error in field.errors %}
+            <li>{{ field.label }}: {{ error }}</li>
+        {% endfor %}
+    {% endfor %}
+    {% for error in form.non_field_errors %}
+        <li>{{ error }}</li>
+    {% endfor %}
+    </ul>
+</div>
+{% endif %}
+
+        <!-- Скрытые поля для защиты от спама -->
+        {{ form.honeypot }}
+        {{ form.timestamp }}
+
+        {% for field in form %}
+            {% if field.name != 'honeypot' and field.name != 'timestamp' %}
+                <div class="form-group mb-3 {% if field.field.widget.input_type == 'checkbox' %}form-check-wrapper{% endif %}">
+                    {% if field.field.widget.input_type == 'checkbox' %}
+                        <!-- Чекбоксы -->
+                        <div class="form-check">
+                            {{ field }}
+                            <label for="{{ field.id_for_label }}" class="form-check-label">
+                                {{ field.label }}
+                                {% if field.field.required %}<span class="text-danger">*</span>{% endif %}
+                            </label>
+                        </div>
+                    {% else %}
+                        <!-- Обычные поля -->
+                        <label for="{{ field.id_for_label }}" class="form-label">
+                            {{ field.label }}
+                            {% if field.field.required %}<span class="text-danger">*</span>{% endif %}
+                        </label>
+                        {{ field }}
+                    {% endif %}
+
+                    <!-- Подсказка для всех полей -->
+                    {% if field.help_text %}
+                        <div class="help-text">
+                            <small class="form-text text-muted">{{ field.help_text }}</small>
+                        </div>
+                    {% endif %}
+
+                    <!-- Ошибки -->
+                    {% for error in field.errors %}
+                        <div class="alert alert-danger mt-1">{{ error }}</div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endfor %}
+
+        <div class="form-group mb-3">
+            <label for="attachment" class="form-label">
+                Прикрепленные файлы
+            </label>
+            <input type="file" name="attachment" id="attachment"
+                   class="form-control" multiple
+                   accept=".jpg,.jpeg,.png,.gif,.pdf,.doc,.docx,.txt,.zip,.rar">
+            <div class="help-text">
+                <small class="form-text text-muted">
+                    Вы можете прикрепить несколько файлов. Максимальный размер каждого файла - 5MB.
+                    Допустимые форматы: изображения, документы, архивы
+                </small>
+            </div>
+        </div>
+
+        <div class="form-actions">
+            <button class="btn btn-success" type="submit">Отправить</button>
+            <a href="{% url 'contacts:page' %}" class="btn btn-secondary" style="margin: 3px;">Отмена</a>
+        </div>
+    </form>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const fileInput = document.querySelector('input[type="file"][multiple]');
+    const fileInfo = document.createElement('div');
+    fileInfo.className = 'file-info mt-2';
+
+    if (fileInput) {
+        fileInput.parentNode.insertBefore(fileInfo, fileInput.nextSibling);
+
+        fileInput.addEventListener('change', function() {
+            if (this.files.length > 0) {
+                const fileNames = Array.from(this.files).map(file => file.name).join(', ');
+                fileInfo.textContent = `Выбрано файлов: ${this.files.length}. ${this.files.length > 3 ? 'Первые 3:' : ''} ${fileNames.slice(0, 100)}${fileNames.length > 100 ? '...' : ''}`;
+                fileInfo.className = 'file-info mt-2 alert alert-info';
+            } else {
+                fileInfo.textContent = '';
+                fileInfo.className = 'file-info mt-2';
+            }
+        });
+    }
+
+    // ОБНОВЛЯЕМ timestamp при загрузке страницы и перед отправкой
+    const form = document.getElementById('contactForm');
+    const timestampField = document.querySelector('.timestamp');
+    form.addEventListener('submit', function(e) {
+    // Отладочная информация
+    console.log('Form submitted');
+    console.log('Timestamp before:', timestampField.value);
+
+    // Обновляем перед отправкой
+    const newTimestamp = Date.now() / 1000;
+    timestampField.value = newTimestamp;
+    console.log('Timestamp after:', newTimestamp);
+
+    // Проверяем файлы
+    const fileInput = document.querySelector('input[type="file"][multiple]');
+    if (fileInput) {
+        console.log('Files:', fileInput.files);
+    }
+});
+
+</script>
+{% endblock %}
