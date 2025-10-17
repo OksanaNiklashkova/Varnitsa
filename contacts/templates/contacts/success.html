@@ -1,0 +1,24 @@
+{% extends 'catalog/base.html' %}
+
+{% block title %}Варница: обращение отправлено{% endblock %}
+
+{% block content %}
+<div class="contact-layout btn-contact-main">
+    <div class="contact-action-section" style="padding-bottom: 15px; margin: 15px;">
+        <div style="display: flex; justify-content: center; align-items: center; padding: 10px;">
+            <h1>Ваше обращение отправлено!</h1>
+        </div>
+        <div style="display: flex; justify-content: center; align-items: center; padding: 10px;">
+            <h2>Наши специалисты ознакомятся с ним и свяжутся с вами,<br>если ваше сообщение требует ответа.</h2>
+        </div>
+        <div style="display: flex; justify-content: center; align-items: center; padding: 10px;">
+            <h2>Спасибо, что вы с нами!</h2>
+        </div>
+
+    </div>
+
+</div>
+<div class="d-flex justify-content-center align-items-center mt-4 p-3">
+    <a href="{% url 'catalog:home' %}" class="btn btn-lg" style="background: #A52A2A; color: white;">← На главную</a>
+</div>
+{% endblock %}

@@ -24,6 +24,7 @@ INSTALLED_APPS = [
     'users',
     'catalog',
     'blog',
+    'contacts',
 ]
 
 MIDDLEWARE = [
@@ -110,3 +111,12 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 LOGIN_REDIRECT_URL = reverse_lazy("catalog:home")
 LOGOUT_REDIRECT_URL = reverse_lazy("catalog:home")
 LOGIN_URL = reverse_lazy("users:login")
+
+EMAIL_BACKEND = os.getenv('EMAIL_BACKEND')
+EMAIL_HOST = os.getenv('EMAIL_HOST')
+EMAIL_PORT = os.getenv('EMAIL_PORT')
+EMAIL_USE_TLS = True if os.getenv('EMAIL_USE_TLS') == 'True' else False
+EMAIL_USE_SSL = True if os.getenv('EMAIL_USE_SSL') =='True' else False
+EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER', 'skyappstore@yandex.ru')
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
