@@ -31,31 +31,32 @@
             </div>
 
             <nav class="nav nav-pills nav-justified align-items-center" style="margin: 10px; gap: 10px;">
-                <a class="btn btn-outline-light btn-lg py-3 d-flex align-items-center justify-content-center flex-fill"
-                   href="{% url 'catalog:home' %}">Главная</a>
-                <a class="btn btn-outline-light btn-lg py-3 d-flex align-items-center justify-content-center flex-fill"
-                   href="{% url 'blog:info_list' %}">Завод "Варница"</a>
+                <a class="custom-menu-btn" href="{% url 'catalog:home' %}">Главная</a>
+                <a class="custom-menu-btn" href="{% url 'blog:info_list' %}">Завод "Варница"</a>
 
                 <div class="dropdown d-flex flex-fill">
-                    <a class="btn btn-outline-light btn-lg dropdown-toggle py-3 d-flex align-items-center justify-content-center w-100"
+                    <a class="custom-menu-btn dropdown-toggle"
                        data-bs-toggle="dropdown" href="{% url 'catalog:products' %}" role="button">
                         Каталог
                     </a>
                     <ul class="dropdown-menu w-100">
                         <li><a class="dropdown-item text-center" href="{% url 'catalog:products' %}">Все категории</a></li>
-                        <li><a class="dropdown-item text-center" href="{% url 'catalog:products' 1 %}">Разливные напитки</a></li>
-                        <li><a class="dropdown-item text-center" href="{% url 'catalog:products' 2 %}">Фасованные напитки</a></li>
-                        <li><a class="dropdown-item text-center" href="{% url 'catalog:products' 3 %}">Безалкогольное пиво</a></li>
-                        <li><a class="dropdown-item text-center" href="{% url 'catalog:products' 4 %}">Квас, лимонад</a></li>
+                        <li><a class="dropdown-item text-center" href="{% url 'catalog:category_products' 1 %}">Разливные напитки</a></li>
+                        <li><a class="dropdown-item text-center" href="{% url 'catalog:category_products' 2 %}">Фасованные напитки</a></li>
+                        <li><a class="dropdown-item text-center" href="{% url 'catalog:category_products' 3 %}">Безалкогольное пиво</a></li>
+                        <li><a class="dropdown-item text-center" href="{% url 'catalog:category_products' 4 %}">Квас, лимонад</a></li>
                     </ul>
                 </div>
 
-                <a class="btn btn-outline-light btn-lg py-3 d-flex align-items-center justify-content-center flex-fill"
-                   href="{% url 'contacts:page' %}">Контакты</a>
-
-                <a class="btn btn-outline-light btn-lg py-3 d-flex align-items-center justify-content-center flex-fill"
+                <a class="custom-menu-btn"
                    href="{% url 'blog:publication_list' %}">Блог</a>
+                <a class="custom-menu-btn"
+                   href="{% url 'contacts:page' %}">Контакты</a>
             </nav>
         </div>
     </div>
 </div>
+
+<style>
+
+</style>

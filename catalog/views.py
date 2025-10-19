@@ -2,7 +2,9 @@ from django.shortcuts import render, get_object_or_404
 from django.urls import reverse_lazy
 from django.views.generic import TemplateView, CreateView, UpdateView, DetailView, DeleteView, ListView
 
+from blog.models import Publication
 from catalog.forms import ProductForm
+from catalog.mixins import SearchMixin
 from catalog.models import Product, Category
 from catalog.services import get_products_by_category
 from users.mixins import AgeVerificationRequiredMixin, ModeratorRequiredMixin
@@ -73,4 +75,35 @@ class AllProductsListView(AgeVerificationRequiredMixin, ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['current_category'] = None
+        return context
+
+
+class SearchResultsView(SearchMixin, ListView):
+    template_name = 'catalog/search_results.html'
+    context_object_name = 'search_results'
+    paginate_by = 10
+
+    def get_queryset(self):
+        query = self.request.GET.get('q', '').strip()
+
+        # Конфигурация моделей для поиска
+        search_models = [
+            {
+                'model': Product,
+                'fields': ['product_name', 'trade_mark', 'specification', 'description'],
+                'weight': 'A'
+            },
+            {
+                'model': Publication,
+                'fields': ['title', 'text', 'rubric'],
+                'weight': 'A'
+            }
+        ]
+
+        return self.perform_search(query, search_models)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['query'] = self.request.GET.get('q', '')
+        context['results_count'] = len(context['search_results'])
         return context

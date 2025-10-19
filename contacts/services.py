@@ -1,4 +1,4 @@
-from django.core.mail import EmailMessage, EmailMultiAlternatives
+from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
 
 from config import settings
@@ -59,10 +59,20 @@ def send_notification_email(contact_request):
         )
         email.attach_alternative(html_message, "text/html")
 
+        attachments = contact_request.attachments.all()
+
         # Прикрепление файлов
-        for attachment in contact_request.attachments.all():
+        for attachment in attachments:
             try:
-                email.attach(attachment.file.name, attachment.file.read(), attachment.file.content_type)
+                # Открываем файл в бинарном режиме
+                with attachment.file.open('rb') as f:
+                    file_content = f.read()
+                    email.attach(
+                        attachment.file.name,
+                        file_content,
+                        'application/octet-stream'  # Универсальный MIME-type
+                    )
+
             except Exception as e:
                 print(f"Ошибка прикрепления файла {attachment.file.name}: {e}")
 

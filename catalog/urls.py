@@ -1,17 +1,16 @@
 from django.urls import path
 from catalog.apps import CatalogConfig
-from catalog.views import HomeView, ProductCreateView, ProductUpdateView, ProductCardDetailView, ProductDeleteView, \
-    ProductByCategoryListView, AllProductsListView
+from catalog import views
 
 app_name = CatalogConfig.name
-print(app_name)
 
 urlpatterns = [
-    path('home/', HomeView.as_view(), name='home'),
-    path('new/', ProductCreateView.as_view(), name='form'),
-    path('update/<int:pk>/', ProductUpdateView.as_view(), name='form'),
-    path('product/<int:pk>/', ProductCardDetailView.as_view(), name='product'),
-    path('delete/<int:pk>/', ProductDeleteView.as_view(), name='delete'),
-    path('products/', AllProductsListView.as_view(), name='products'),
-    path('products/<int:category>/', ProductByCategoryListView.as_view(), name='products'),
+    path('home/', views.HomeView.as_view(), name='home'),
+    path('new/', views.ProductCreateView.as_view(), name='product_create'),
+    path('update/<int:pk>/', views.ProductUpdateView.as_view(), name='product_update'),
+    path('product/<int:pk>/', views.ProductCardDetailView.as_view(), name='product'),
+    path('delete/<int:pk>/', views.ProductDeleteView.as_view(), name='product_delete'),
+    path('products/', views.AllProductsListView.as_view(), name='products'),
+    path('products/<int:category>/', views.ProductByCategoryListView.as_view(), name='category_products'),
+    path('search/', views.SearchResultsView.as_view(), name='search_results'),
 ]

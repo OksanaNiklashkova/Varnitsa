@@ -1,3 +1,4 @@
+from django.contrib.postgres.indexes import GinIndex
 from django.db import models
 
 class Publication(models.Model):
@@ -32,6 +33,9 @@ class Publication(models.Model):
         verbose_name_plural = 'публикации'
         ordering = ['created_at', ]
         db_table = 'publications'
+        indexes = [
+            GinIndex(fields=['title', 'text', 'rubric']),
+        ]
 
 
 class Photo(models.Model):

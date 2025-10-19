@@ -6,6 +6,7 @@
 {% endblock %}
 
 {% block content %}
+{% include 'catalog/search_form.html' %}
 {% if user.is_authenticated %}
 <div class="row">
     <a href="{% url 'blog:publication_create' %}" class="btn btn-lg btn-block" type="submit"

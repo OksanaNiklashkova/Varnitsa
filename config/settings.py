@@ -1,4 +1,6 @@
 import os
+import sys
+
 import dotenv
 from pathlib import Path
 
@@ -120,3 +122,11 @@ EMAIL_USE_SSL = True if os.getenv('EMAIL_USE_SSL') =='True' else False
 EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER', 'skyappstore@yandex.ru')
 EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+
+if 'test' in sys.argv:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'test_db.sqlite3',
+        }
+    }

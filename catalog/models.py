@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.postgres.indexes import GinIndex
 
 class Category(models.Model):
     """Модель для создания категорий продуктов"""
@@ -12,6 +13,7 @@ class Category(models.Model):
         verbose_name_plural = 'категории'
         ordering = ['category_name',]
         db_table = 'categories'
+
 
 
 class Product(models.Model):
@@ -35,3 +37,6 @@ class Product(models.Model):
         verbose_name_plural = 'продукты'
         ordering = ['product_name',]
         db_table = 'products'
+        indexes = [
+            GinIndex(fields=['product_name', 'trade_mark', 'specification', 'description']),
+        ]

@@ -17,10 +17,10 @@ class ModeratorRequiredMixin(LoginRequiredMixin, UserPassesTestMixin):
     """Миксин для проверки прав модератора"""
 
     def test_func(self):
-        return self.request.user.is_staff
+        return self.request.user.is_authenticated
 
     def handle_no_permission(self):
         if not self.request.user.is_authenticated:
             return super().handle_no_permission()
         messages.error(self.request, "У вас нет прав для выполнения этого действия")
-        return redirect('home')
+        return redirect('catalog:home')

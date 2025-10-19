@@ -60,10 +60,13 @@ class ContactRequestCreateView(generic.CreateView):
 
         # Обработка множественных файлов
         for file in files:
-            ContactAttachment.objects.create(
+            attachment = ContactAttachment.objects.create(
                 contact_request=contact_request,
                 file=file
             )
+
+        # Проверяем сохраненные вложения
+        saved_attachments = contact_request.attachments.all()
 
         # Отправляем email
         send_notification_email(contact_request)
@@ -72,5 +75,4 @@ class ContactRequestCreateView(generic.CreateView):
 
     def form_invalid(self, form):
         """Обработка невалидной формы"""
-        print("Form errors:", form.errors)  # Для отладки
         return super().form_invalid(form)
