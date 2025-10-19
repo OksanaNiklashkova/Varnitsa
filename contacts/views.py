@@ -66,7 +66,7 @@ class ContactRequestCreateView(generic.CreateView):
             )
 
         # Проверяем сохраненные вложения
-        saved_attachments = contact_request.attachments.all()
+        contact_attachment = contact_request.attachments.all()
 
         # Отправляем email
         send_notification_email(contact_request)
