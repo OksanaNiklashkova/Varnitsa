@@ -142,12 +142,3 @@ class PhotoDeleteView(ModeratorRequiredMixin, DeleteView):
     def delete(self, request, *args, **kwargs):
         messages.success(request, 'Фотография удалена!')
         return super().delete(request, *args, **kwargs)
-
-
-def delete_photo(request, pk):
-    """Функция для быстрого удаления фото"""
-    photo = get_object_or_404(Photo, pk=pk)
-    publication_pk = photo.publication.pk
-    photo.delete()
-    messages.success(request, 'Фотография удалена!')
-    return redirect('blog:publication_update', pk=publication_pk)

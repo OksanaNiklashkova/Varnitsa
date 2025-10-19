@@ -1,5 +1,4 @@
 from django.contrib.postgres.search import SearchVector, SearchQuery, SearchRank
-from django.db.models import Q
 
 
 class SearchMixin:

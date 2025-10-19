@@ -11,7 +11,7 @@ class Publication(models.Model):
     title = models.CharField(max_length=150, verbose_name='Заголовок')
     rubric = models.CharField(max_length=150, blank=True, null=True, verbose_name='Рубрика')
     text = models.TextField(verbose_name='Текст')
-    preview = models.ImageField(null=True, upload_to='images/blog/preview/', verbose_name='Превью')
+    preview = models.ImageField(upload_to='images/blog/preview/', default='images/placeholder.png', verbose_name='Превью')
     created_at = models.DateTimeField(auto_now_add=True, verbose_name='Дата создания')
     is_published = models.BooleanField(default=True, verbose_name='Признак публикации')
     views_counter = models.IntegerField(default=0, verbose_name='Счетчик просмотров')
@@ -34,7 +34,11 @@ class Publication(models.Model):
         ordering = ['created_at', ]
         db_table = 'publications'
         indexes = [
-            GinIndex(fields=['title', 'text', 'rubric']),
+            GinIndex(
+                fields=['title', 'text', 'rubric'],
+                name='publication_gin_idx',
+                opclasses=['gin_trgm_ops', 'gin_trgm_ops', 'gin_trgm_ops']
+            ),
         ]
 
 

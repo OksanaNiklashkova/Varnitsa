@@ -35,8 +35,11 @@ class Product(models.Model):
     class Meta:
         verbose_name = 'продукт'
         verbose_name_plural = 'продукты'
-        ordering = ['product_name',]
+        ordering = ['product_name', ]
         db_table = 'products'
         indexes = [
-            GinIndex(fields=['product_name', 'trade_mark', 'specification', 'description']),
+            GinIndex(fields=['product_name', 'trade_mark', 'specification', 'description'],
+                     name='product_gin_idx',
+                     opclasses=['gin_trgm_ops', 'gin_trgm_ops', 'gin_trgm_ops', 'gin_trgm_ops']
+                     ),
         ]

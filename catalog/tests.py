@@ -1,15 +1,13 @@
+from io import BytesIO
 from unittest.mock import patch
-
 from django.test import TestCase, Client
 from django.urls import reverse
 from users.models import User
 from django.core.files.uploadedfile import SimpleUploadedFile
 from catalog.models import Product, Category
 from blog.models import Publication
-from catalog.mixins import SearchMixin
 import tempfile
 from PIL import Image
-import json
 
 
 class CatalogTestBase(TestCase):
@@ -27,29 +25,12 @@ class CatalogTestBase(TestCase):
         self.category1 = Category.objects.create(category_name='Разливные напитки')
         self.category2 = Category.objects.create(category_name='Фасованные напитки')
 
-        # Создаем тестовое изображение
-        image = tempfile.NamedTemporaryFile(suffix='.jpg', delete=False)
-        img = Image.new('RGB', (100, 100), color='red')
-        img.save(image, 'JPEG')
-        image.seek(0)
-
-        # Создаем тестовое изображение для публикации
-        preview_image = tempfile.NamedTemporaryFile(suffix='.jpg', delete=False)
-        preview_img = Image.new('RGB', (100, 100), color='blue')
-        preview_img.save(preview_image, 'JPEG')
-        preview_image.seek(0)
-
-        # Создаем тестовые продукты
+        # Создаем тестовые продукты БЕЗ изображений
         self.product1 = Product.objects.create(
             product_name='Пиво Темное',
             trade_mark='Варница',
             specification='Характеристики темного пива',
             description='Описание темного пива',
-            image=SimpleUploadedFile(
-                name='test_image.jpg',
-                content=image.read(),
-                content_type='image/jpeg'
-            ),
             alcoholic=True,
             is_published=True
         )
@@ -65,20 +46,32 @@ class CatalogTestBase(TestCase):
         )
         self.product2.category.add(self.category2)
 
-        # Создаем тестовую публикацию для поиска
+        # Создаем тестовую публикацию БЕЗ изображения
         self.publication = Publication.objects.create(
             title='Новое пиво',
             text='Текст о новом пиве',
             rubric='Новости',
-            preview=SimpleUploadedFile(
-                name='test_preview.jpg',
-                content=preview_image.read(),
-                content_type='image/jpeg'
-            ),
             is_published=True
         )
 
         self.client = Client()
+
+    def create_test_image(self, color='red'):
+        """Создает тестовое изображение в памяти"""
+        image_file = BytesIO()
+        image = Image.new('RGB', (100, 100), color=color)
+        image.save(image_file, 'JPEG')
+        image_file.seek(0)
+        return image_file
+
+    def create_uploaded_file(self, filename, color='red'):
+        """Создает SimpleUploadedFile для тестов"""
+        image_file = self.create_test_image(color)
+        return SimpleUploadedFile(
+            name=filename,
+            content=image_file.read(),
+            content_type='image/jpeg'
+        )
 
     def set_age_verified(self):
         """Устанавливает возрастную проверку в сессии"""
@@ -92,12 +85,11 @@ class CatalogTestBase(TestCase):
         self.set_age_verified()
         return True
 
-
 class HomeViewTests(CatalogTestBase):
     """Тесты для главной страницы"""
 
     def test_home_view_success(self):
-        """Тест статуса код главной страницы"""
+        """Тест для контроллера главной страницы"""
         self.set_age_verified()
         response = self.client.get(reverse('catalog:home'))
         self.assertEqual(response.status_code, 200)
@@ -111,12 +103,6 @@ class ProductCreateViewTests(CatalogTestBase):
         """Тест успешного создания продукта"""
         self.login_as_moderator()
 
-        # Создаем изображение для формы
-        image = tempfile.NamedTemporaryFile(suffix='.jpg', delete=False)
-        img = Image.new('RGB', (100, 100), color='green')
-        img.save(image, 'JPEG')
-        image.seek(0)
-
         form_data = {
             'product_name': 'Новое пиво',
             'trade_mark': 'Варница',
@@ -125,24 +111,17 @@ class ProductCreateViewTests(CatalogTestBase):
             'alcoholic': True,
             'is_published': True,
             'category': [self.category1.id],
-            'image': SimpleUploadedFile(
-                name='new_product.jpg',
-                content=image.read(),
-                content_type='image/jpeg'
-            )
+            'image': self.create_uploaded_file('new_product.jpg', 'green')
         }
 
         response = self.client.post(
             reverse('catalog:product_create'),
             data=form_data,
-            follow=False  # Не следовать за редиректом
+            follow=False
         )
 
-        # После успешного создания должен быть редирект (302)
         self.assertEqual(response.status_code, 302)
-        # Проверяем что редирект на правильную страницу
         self.assertEqual(response.url, reverse('catalog:products'))
-        # Проверяем что продукт создался
         self.assertTrue(Product.objects.filter(product_name='Новое пиво').exists())
 
 
@@ -217,7 +196,7 @@ class ProductByCategoryListViewTests(CatalogTestBase):
     """Тесты для списка продуктов по категории"""
 
     def test_category_products_view_success(self):
-        """Тест статуса код страницы категории"""
+        """Тест успешного формирования списка по категории"""
         self.set_age_verified()
         url = reverse('catalog:category_products', kwargs={'category': self.category1.pk})
         response = self.client.get(url)
@@ -241,8 +220,8 @@ class ProductByCategoryListViewTests(CatalogTestBase):
 class AllProductsListViewTests(CatalogTestBase):
     """Тесты для списка всех продуктов"""
 
-    def test_all_products_view_status_code(self):
-        """Тест статуса код страницы всех продуктов"""
+    def test_all_products_view_success(self):
+        """Тест успешного формирования списка всех продуктов"""
         self.set_age_verified()
         response = self.client.get(reverse('catalog:products'))
         products = response.context['products']
@@ -275,7 +254,7 @@ class SearchResultsViewTests(CatalogTestBase):
         self.assertIn('query', response.context)
         self.assertIn('results_count', response.context)
         self.assertEqual(response.context['query'], 'пиво')
-        self.assertEqual(len(response.context['search_results']), 2)  # Теперь есть результаты
+        self.assertEqual(len(response.context['search_results']), 2)
         self.assertEqual(response.context['results_count'], 2)
 
     @patch('catalog.views.SearchMixin.perform_search')
