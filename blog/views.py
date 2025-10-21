@@ -1,6 +1,10 @@
 from django.contrib import messages
-from django.shortcuts import render, redirect, get_object_or_404
+from django.core.cache import cache
+from django.db.models.signals import post_save, post_delete
+from django.dispatch import receiver
 from django.urls import reverse_lazy
+from django.utils.decorators import method_decorator
+from django.views.decorators.cache import cache_page
 from django.views.generic import ListView, CreateView, DeleteView, UpdateView, DetailView
 
 from blog.forms import PublicationForm, MultiplePhotoForm
@@ -9,16 +13,41 @@ from users.mixins import AgeVerificationRequiredMixin, ModeratorRequiredMixin
 
 
 class PublicationListView(AgeVerificationRequiredMixin, ListView):
+    """ Контроллер получения списка статей """
     model = Publication
     template_name = 'blog/publication_list.html'
     context_object_name = 'publications'
     paginate_by = 10
 
     def get_queryset(self):
-        return Publication.objects.filter(is_published=True, publication_type='full').prefetch_related('photos')
+        """ Метод получения списка статей с кешированием """
+        cache_key = 'publications_queryset_v2'
+        queryset = cache.get(cache_key)
+        if queryset is None:
+            queryset = self._get_fresh_queryset()
+            cache.set(cache_key, queryset, 60 * 15)
+        return queryset
 
+    def _get_fresh_queryset(self):
+        """ Метод обновления списка статей """
+        return Publication.objects.filter(
+            is_published=True,
+            publication_type='full'
+        ).prefetch_related('photos').order_by('-created_at')
 
+# Сигналы для инвалидации кеша при изменении публикаций
+@receiver([post_save, post_delete], sender=Publication)
+def invalidate_publication_cache(sender, **kwargs):
+    cache_keys = [
+        'publications_queryset',
+        'publications_queryset_v2'
+    ]
+    for key in cache_keys:
+        cache.delete(key)
+
+@method_decorator(cache_page(60 * 15), name='dispatch')
 class SmallPublicationListView(AgeVerificationRequiredMixin, ListView):
+    """ Контроллер получения списка заметок """
     model = Publication
     template_name = 'blog/small_publication_list.html'
     context_object_name = 'publications'
@@ -27,8 +56,9 @@ class SmallPublicationListView(AgeVerificationRequiredMixin, ListView):
     def get_queryset(self):
         return Publication.objects.filter(is_published=True, publication_type='small')
 
-
+@method_decorator(cache_page(60 * 15), name='dispatch')
 class PublicationDetailView(AgeVerificationRequiredMixin, DetailView):
+    """ Контроллер просмотра одной статьи """
     model = Publication
     template_name = 'blog/publication_detail.html'
     context_object_name = 'publication'
@@ -51,6 +81,7 @@ class PublicationDetailView(AgeVerificationRequiredMixin, DetailView):
 
 
 class PublicationCreateView(ModeratorRequiredMixin, CreateView):
+    """ Контроллер создания новой статьи """
     model = Publication
     form_class = PublicationForm
     template_name = 'blog/publication_form.html'
@@ -88,6 +119,7 @@ class PublicationCreateView(ModeratorRequiredMixin, CreateView):
 
 
 class PublicationDeleteView(ModeratorRequiredMixin, DeleteView):
+    """ Контроллер удаления статьи """
     model = Publication
     template_name = 'blog/publication_confirm_delete.html'
 
@@ -96,6 +128,7 @@ class PublicationDeleteView(ModeratorRequiredMixin, DeleteView):
 
 
 class PublicationUpdateView(ModeratorRequiredMixin, UpdateView):
+    """ Контроллер редактирования статьи """
     model = Publication
     form_class = PublicationForm
     template_name = 'blog/publication_form.html'
@@ -133,6 +166,7 @@ class PublicationUpdateView(ModeratorRequiredMixin, UpdateView):
 
 
 class PhotoDeleteView(ModeratorRequiredMixin, DeleteView):
+    """ Контроллер для удаления сохраненных изображений """
     model = Photo
     template_name = 'blog/photo_confirm_delete.html'
 
