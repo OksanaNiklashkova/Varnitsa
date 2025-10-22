@@ -51,8 +51,9 @@
 
 .custom-menu-btn:hover,
 .custom-menu-btn:focus {
+    font-weight: 700;
     color: #fff;
-    background-color: #8B0000;
+    background-color: #4d0202;
     transform: translateY(-1px);
     border: 1px solid #FF8C00;
     box-shadow:
