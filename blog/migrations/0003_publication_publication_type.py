@@ -6,13 +6,18 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('blog', '0002_publication_rubric'),
+        ("blog", "0002_publication_rubric"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='publication',
-            name='publication_type',
-            field=models.CharField(choices=[('full', 'Статья для блога'), ('small', 'Заметка')], default='full', max_length=10, verbose_name='Тип статьи'),
+            model_name="publication",
+            name="publication_type",
+            field=models.CharField(
+                choices=[("full", "Статья для блога"), ("small", "Заметка")],
+                default="full",
+                max_length=10,
+                verbose_name="Тип статьи",
+            ),
         ),
     ]

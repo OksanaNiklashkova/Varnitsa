@@ -8,43 +8,60 @@ class Migration(migrations.Migration):
 
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='Category',
+            name="Category",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('category_name', models.CharField(max_length=150, verbose_name='Наименование')),
+                ("id", models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name="ID")),
+                ("category_name", models.CharField(max_length=150, verbose_name="Наименование")),
             ],
             options={
-                'verbose_name': 'категория',
-                'verbose_name_plural': 'категории',
-                'db_table': 'categories',
-                'ordering': ['category_name'],
+                "verbose_name": "категория",
+                "verbose_name_plural": "категории",
+                "db_table": "categories",
+                "ordering": ["category_name"],
             },
         ),
         migrations.CreateModel(
-            name='Product',
+            name="Product",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('product_name', models.CharField(blank=True, max_length=150, verbose_name='Наименование')),
-                ('trade_mark', models.CharField(blank=True, max_length=50, verbose_name='ТМ')),
-                ('specification', models.TextField(blank=True, default='', null=True, verbose_name='Характеристики')),
-                ('description', models.TextField(blank=True, default='', null=True, verbose_name='Описание')),
-                ('image', models.ImageField(blank=True, default='images/placeholder.png', null=True, upload_to='images/', verbose_name='Изображение')),
-                ('alcoholic', models.BooleanField(default=True, verbose_name='Алкогольный')),
-                ('is_published', models.BooleanField(default=False, verbose_name='Опубликовано')),
-                ('created_at', models.DateTimeField(auto_now_add=True, verbose_name='Дата создания')),
-                ('updated_at', models.DateTimeField(auto_now=True, verbose_name='Дата последнего изменения')),
-                ('category', models.ForeignKey(blank=True, on_delete=django.db.models.deletion.CASCADE, related_name='products', to='catalog.category', verbose_name='Категория')),
+                ("id", models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name="ID")),
+                ("product_name", models.CharField(blank=True, max_length=150, verbose_name="Наименование")),
+                ("trade_mark", models.CharField(blank=True, max_length=50, verbose_name="ТМ")),
+                ("specification", models.TextField(blank=True, default="", null=True, verbose_name="Характеристики")),
+                ("description", models.TextField(blank=True, default="", null=True, verbose_name="Описание")),
+                (
+                    "image",
+                    models.ImageField(
+                        blank=True,
+                        default="images/placeholder.png",
+                        null=True,
+                        upload_to="images/",
+                        verbose_name="Изображение",
+                    ),
+                ),
+                ("alcoholic", models.BooleanField(default=True, verbose_name="Алкогольный")),
+                ("is_published", models.BooleanField(default=False, verbose_name="Опубликовано")),
+                ("created_at", models.DateTimeField(auto_now_add=True, verbose_name="Дата создания")),
+                ("updated_at", models.DateTimeField(auto_now=True, verbose_name="Дата последнего изменения")),
+                (
+                    "category",
+                    models.ForeignKey(
+                        blank=True,
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="products",
+                        to="catalog.category",
+                        verbose_name="Категория",
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'продукт',
-                'verbose_name_plural': 'продукты',
-                'db_table': 'products',
-                'ordering': ['product_name'],
+                "verbose_name": "продукт",
+                "verbose_name_plural": "продукты",
+                "db_table": "products",
+                "ordering": ["product_name"],
             },
         ),
     ]

@@ -1,0 +1,20 @@
+[
+{
+    "model": "users.user",
+    "pk": 1,
+    "fields": {
+        "password": "pbkdf2_sha256$1000000$jzgs3mQPLcdeRs0FGFYIHC$aOKqVgOSQiufmVxoVj2einKoSGGBsLfWkSUMkFIiJBU=",
+        "last_login": "2025-10-19T17:58:36.197Z",
+        "is_superuser": true,
+        "first_name": "",
+        "last_name": "",
+        "is_staff": true,
+        "is_active": true,
+        "date_joined": "2025-10-07T11:25:46.143Z",
+        "username": "admin",
+        "email": "o.niklashkova@gmail.com",
+        "groups": [],
+        "user_permissions": []
+    }
+}
+]

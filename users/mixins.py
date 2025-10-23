@@ -7,9 +7,9 @@ class AgeVerificationRequiredMixin:
     """Миксин для проверки возраста"""
 
     def dispatch(self, request, *args, **kwargs):
-        if not request.session.get('age_verified', False):
+        if not request.session.get("age_verified", False):
             messages.info(request, "Пожалуйста, подтвердите ваш возраст для доступа к сайту")
-            return redirect('users:age_gate')
+            return redirect("users:age_gate")
         return super().dispatch(request, *args, **kwargs)
 
 
@@ -23,4 +23,4 @@ class ModeratorRequiredMixin(LoginRequiredMixin, UserPassesTestMixin):
         if not self.request.user.is_authenticated:
             return super().handle_no_permission()
         messages.error(self.request, "У вас нет прав для выполнения этого действия")
-        return redirect('catalog:home')
+        return redirect("catalog:home")

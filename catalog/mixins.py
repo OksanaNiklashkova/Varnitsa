@@ -30,9 +30,9 @@ class SearchMixin:
         results = []
 
         for config in search_models:
-            model = config['model']
-            fields = config['fields']
-            weight = config.get('weight', 'A')
+            model = config["model"]
+            fields = config["fields"]
+            weight = config.get("weight", "A")
 
             # Создаем SearchVector для указанных полей
             search_vectors = []
@@ -45,12 +45,11 @@ class SearchMixin:
                 combined_vector += vector
 
             # Выполняем поиск с ранжированием
-            model_results = model.objects.annotate(
-                search=combined_vector,
-                rank=SearchRank(combined_vector, search_query)
-            ).filter(
-                search=search_query
-            ).order_by('-rank')  # Сортировка по релевантности
+            model_results = (
+                model.objects.annotate(search=combined_vector, rank=SearchRank(combined_vector, search_query))
+                .filter(search=search_query)
+                .order_by("-rank")
+            )  # Сортировка по релевантности
 
             # Добавляем тип модели для идентификации в шаблоне
             for obj in model_results:

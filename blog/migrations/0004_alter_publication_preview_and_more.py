@@ -7,17 +7,23 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('blog', '0003_publication_publication_type'),
+        ("blog", "0003_publication_publication_type"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='publication',
-            name='preview',
-            field=models.ImageField(default='images/placeholder.png', upload_to='images/blog/preview/', verbose_name='Превью'),
+            model_name="publication",
+            name="preview",
+            field=models.ImageField(
+                default="images/placeholder.png", upload_to="images/blog/preview/", verbose_name="Превью"
+            ),
         ),
         migrations.AddIndex(
-            model_name='publication',
-            index=django.contrib.postgres.indexes.GinIndex(fields=['title', 'text', 'rubric'], name='publication_gin_idx', opclasses=['gin_trgm_ops', 'gin_trgm_ops', 'gin_trgm_ops']),
+            model_name="publication",
+            index=django.contrib.postgres.indexes.GinIndex(
+                fields=["title", "text", "rubric"],
+                name="publication_gin_idx",
+                opclasses=["gin_trgm_ops", "gin_trgm_ops", "gin_trgm_ops"],
+            ),
         ),
     ]

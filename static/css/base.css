@@ -53,12 +53,12 @@
 .custom-menu-btn:focus {
     font-weight: 700;
     color: #fff;
-    background-color: #4d0202;
+    background-color: #7d1414;
     transform: translateY(-1px);
     border: 1px solid #FF8C00;
     box-shadow:
         inset 0 0 0 1px #FF8C00,
-        0 0 0 2px #800000,
+        0 0 0 2px #570707,
         0 2px 4px rgba(165, 42, 42, 0.3);
 }
 

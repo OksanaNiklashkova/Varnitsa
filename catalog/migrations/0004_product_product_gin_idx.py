@@ -7,12 +7,16 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('catalog', '0003_auto_20251019_1412'),
+        ("catalog", "0003_auto_20251019_1412"),
     ]
 
     operations = [
         migrations.AddIndex(
-            model_name='product',
-            index=django.contrib.postgres.indexes.GinIndex(fields=['product_name', 'trade_mark', 'specification', 'description'], name='product_gin_idx', opclasses=['gin_trgm_ops', 'gin_trgm_ops', 'gin_trgm_ops', 'gin_trgm_ops']),
+            model_name="product",
+            index=django.contrib.postgres.indexes.GinIndex(
+                fields=["product_name", "trade_mark", "specification", "description"],
+                name="product_gin_idx",
+                opclasses=["gin_trgm_ops", "gin_trgm_ops", "gin_trgm_ops", "gin_trgm_ops"],
+            ),
         ),
     ]
