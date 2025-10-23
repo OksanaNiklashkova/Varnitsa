@@ -1,0 +1,16 @@
+{% load static %}
+<form action="{% url 'catalog:search_results' %}" method="get" class="search-form" style="margin-bottom: 10px;">
+    <div class="input-group">
+        <input type="text"
+               name="q"
+               class="form-control"
+               placeholder="Поиск по сайту"
+               value="{{ request.GET.q|default:'' }}"
+               aria-label="Поиск">
+        <button class="btn"
+                type="submit"
+                style="background: #A52A2A; color: white;">
+            <i class="fas fa-search"></i> Найти
+        </button>
+    </div>
+</form>

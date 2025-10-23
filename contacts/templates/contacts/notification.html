@@ -35,6 +35,14 @@
             <td style="padding: 8px; border: 1px solid #ddd;">{{ contact.created_at|date:"d.m.Y H:i" }}</td>
         </tr>
     </table>
+    {% if contact.attachments.all %}
+    <h3>Прикрепленные файлы ({{ contact.attachments.count }}):</h3>
+    <ul>
+        {% for attachment in contact.attachments.all %}
+        <li>{{ attachment.file.name }} ({{ attachment.file.size|filesizeformat }})</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
 
     <p style="margin-top: 20px;">
         <a href="{{ site_url }}{% url 'admin:contacts_contactrequest_change' contact.id %}">

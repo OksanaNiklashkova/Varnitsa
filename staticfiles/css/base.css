@@ -33,6 +33,40 @@
     width: 100%;
 }
 
+.custom-menu-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 1 1 0px;
+    padding: 0.75rem 1rem;
+    font-size: 1.25rem;
+    line-height: 1.5;
+    border: 1px solid #f8f9fa;
+    border-radius: 0.3rem;
+    color: #f8f9fa;
+    background-color: transparent;
+    text-decoration: none;
+    transition: all 0.15s ease-in-out;
+}
+
+.custom-menu-btn:hover,
+.custom-menu-btn:focus {
+    font-weight: 700;
+    color: #fff;
+    background-color: #7d1414;
+    transform: translateY(-1px);
+    border: 1px solid #FF8C00;
+    box-shadow:
+        inset 0 0 0 1px #FF8C00,
+        0 0 0 2px #570707,
+        0 2px 4px rgba(165, 42, 42, 0.3);
+}
+
+.custom-menu-btn:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
 .dropdown-menu {
     background-color: #EFEBE9;
     border: 1px solid #8D6E63;
@@ -49,14 +83,14 @@
 
 .dropdown-item:hover,
 .dropdown-item:focus {
-    color: #FFFFFF !important;
-    background-color: #8D6E63 !important;
+    color: #FFFFFF;
+    background-color: #8D6E63;
     transform: translateX(5px);
 }
 
 .dropdown-item:active {
-    color: #FFFFFF !important;
-    background-color: #6D4C41 !important;
+    color: #FFFFFF;
+    background-color: #6D4C41;
 }
 
 .dropdown-item:last-child {
@@ -74,7 +108,7 @@
 }
 
 .warning-alcohol__wrapper {
-    background: #fdd942;
+    background: #fdc52a;
     bottom: 0;
     width: 100%;
     text-align: center;
@@ -86,6 +120,20 @@
 
 .min-vh-80 {
     min-height: 80vh;
+}
+
+.search-form {
+    margin: 15px 0;
+}
+
+.search-form .form-control {
+    border: 2px solid #A52A2A;
+    border-right: none;
+}
+
+.search-form .form-control:focus {
+    border-color: #A52A2A;
+    box-shadow: 0 0 0 0.2rem rgba(165, 42, 42, 0.25);
 }
 
 .product-image-container {
@@ -158,7 +206,74 @@
 custom-image.volume-shadow {
     box-shadow:
         0 4px 8px rgba(210, 180, 140, 0.4),
-        0 8px 16px rgba(210, 180, 140, 0.2) !important;
+        0 8px 16px rgba(210, 180, 140, 0.2);
+}
+/* Кнопка подробнее в карточке */
+
+.product-card-hover {
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.product-card-hover:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+.product-card-hover:hover .cup-pulse-btn {
+    animation: cupPulse 2s infinite;
+    background-color: rgba(165, 42, 42, 0.1);
+}
+
+.product-card-hover:hover .cup-pulse-btn img {
+    transform: rotate(-5deg) scale(1.15);
+}
+
+@keyframes cupPulse {
+    0% {
+        box-shadow: 0 0 0 0 rgba(165, 42, 42, 0.3);
+    }
+    50% {
+        box-shadow: 0 0 0 6px rgba(165, 42, 42, 0.1);
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba(165, 42, 42, 0);
+    }
+}
+
+.pulse-cup-btn {
+    display: inline-block;
+    border-radius: 10px;
+    padding: 6px;
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+.pulse-cup-btn:hover {
+    animation: pulse 1s infinite;
+    background-color: rgba(165, 42, 42, 0.15);
+}
+
+.pulse-cup-btn:hover img {
+    transform: scale(1.15);
+}
+
+@keyframes pulse {
+    0% {
+        box-shadow: 0 0 0 0 rgba(165, 42, 42, 0.4);
+    }
+    70% {
+        box-shadow: 0 0 0 10px rgba(165, 42, 42, 0);
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba(165, 42, 42, 0);
+    }
+}
+
+.pulse-cup-btn img {
+    height: 50px;
+    width: auto;
+    transition: transform 0.3s ease;
 }
 
 .contact-form-container {
@@ -327,7 +442,7 @@ custom-image.volume-shadow {
 /* Кнопка */
 .contact-action-section {
     width: 100%;
-    margin: 40px 0;
+    margin-bottom: 10px 0;
 }
 
 .btn-contact-main {

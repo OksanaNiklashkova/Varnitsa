@@ -8,40 +8,62 @@ class Migration(migrations.Migration):
 
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='ContactRequest',
+            name="ContactRequest",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('request_type', models.CharField(choices=[('review', 'Хочу оставить отзыв'), ('sales', 'Хочу продавать ваше пиво'), ('supply', 'Хочу предложить свой товар/услуги'), ('other', 'У меня другой вопрос')], default='review', max_length=20, verbose_name='Тип обращения')),
-                ('name', models.CharField(blank=True, max_length=100, null=True, verbose_name='Имя')),
-                ('email', models.EmailField(max_length=255, verbose_name='Email для связи')),
-                ('subject', models.CharField(max_length=200, verbose_name='Тема')),
-                ('message', models.TextField(verbose_name='Сообщение')),
-                ('attachment', models.FileField(blank=True, null=True, upload_to='attachments/')),
-                ('consent_personal_data', models.BooleanField(default=False, verbose_name='Согласие на обработку персональных данных')),
-                ('consent_newsletter', models.BooleanField(default=False, verbose_name='Согласие на рассылку')),
-                ('ip_address', models.GenericIPAddressField(blank=True, null=True, verbose_name='IP адрес')),
-                ('user_agent', models.TextField(blank=True, verbose_name='User Agent')),
-                ('created_at', models.DateTimeField(auto_now_add=True, verbose_name='Дата создания')),
-                ('is_processed', models.BooleanField(default=False, verbose_name='Обработано')),
+                ("id", models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name="ID")),
+                (
+                    "request_type",
+                    models.CharField(
+                        choices=[
+                            ("review", "Хочу оставить отзыв"),
+                            ("sales", "Хочу продавать ваше пиво"),
+                            ("supply", "Хочу предложить свой товар/услуги"),
+                            ("other", "У меня другой вопрос"),
+                        ],
+                        default="review",
+                        max_length=20,
+                        verbose_name="Тип обращения",
+                    ),
+                ),
+                ("name", models.CharField(blank=True, max_length=100, null=True, verbose_name="Имя")),
+                ("email", models.EmailField(max_length=255, verbose_name="Email для связи")),
+                ("subject", models.CharField(max_length=200, verbose_name="Тема")),
+                ("message", models.TextField(verbose_name="Сообщение")),
+                ("attachment", models.FileField(blank=True, null=True, upload_to="attachments/")),
+                (
+                    "consent_personal_data",
+                    models.BooleanField(default=False, verbose_name="Согласие на обработку персональных данных"),
+                ),
+                ("consent_newsletter", models.BooleanField(default=False, verbose_name="Согласие на рассылку")),
+                ("ip_address", models.GenericIPAddressField(blank=True, null=True, verbose_name="IP адрес")),
+                ("user_agent", models.TextField(blank=True, verbose_name="User Agent")),
+                ("created_at", models.DateTimeField(auto_now_add=True, verbose_name="Дата создания")),
+                ("is_processed", models.BooleanField(default=False, verbose_name="Обработано")),
             ],
             options={
-                'verbose_name': 'Обращение',
-                'verbose_name_plural': 'Обращения',
-                'ordering': ['-created_at'],
+                "verbose_name": "Обращение",
+                "verbose_name_plural": "Обращения",
+                "ordering": ["-created_at"],
             },
         ),
         migrations.CreateModel(
-            name='ContactAttachment',
+            name="ContactAttachment",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('file', models.FileField(upload_to='contact_attachments/')),
-                ('uploaded_at', models.DateTimeField(auto_now_add=True)),
-                ('contact_request', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='attachments', to='contacts.contactrequest')),
+                ("id", models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name="ID")),
+                ("file", models.FileField(upload_to="contact_attachments/")),
+                ("uploaded_at", models.DateTimeField(auto_now_add=True)),
+                (
+                    "contact_request",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="attachments",
+                        to="contacts.contactrequest",
+                    ),
+                ),
             ],
         ),
     ]
