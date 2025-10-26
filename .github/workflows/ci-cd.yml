@@ -3,135 +3,187 @@ name: Deploy Django App
 on: [push, pull_request]
 
 env:
-  DOCKER_IMAGE: oksananik/varnitsa-app
+  DOCKER_IMAGE: OksanaNiklashkova/varnitsa-web
   REGISTRY: ghcr.io
 
 jobs:
-  test:
+  lint:
     runs-on: ubuntu-latest
-    services:
-      postgres:
-        image: postgres:16.0
-        env:
-          POSTGRES_DB: test_db
-          POSTGRES_USER: test_user
-          POSTGRES_PASSWORD: test_password
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-        ports:
-          - 5432:5432
-
-      redis:
-        image: redis:alpine
-        options: >-
-          --health-cmd "redis-cli ping"
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-        ports:
-          - 6379:6379
-
     steps:
-    - uses: actions/checkout@v4
+      - name: Check out code
+        uses: actions/checkout@v4
 
-    - name: Set up Python
-      uses: actions/setup-python@v4
-      with:
-        python-version: '3.11'
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.13"
 
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install -r requirements.txt
+      - name: Install flake8
+        run: |
+          python -m pip install --upgrade pip
+          pip install flake8
 
-    - name: Run tests
-      env:
-        SECRET_KEY: test-secret-key
-        DEBUG: True
-        POSTGRES_DB: test_db
-        POSTGRES_USER: test_user
-        POSTGRES_PASSWORD: test_password
-        POSTGRES_HOST: localhost
-        POSTGRES_PORT: 5432
-        EMAIL_BACKEND: django.core.mail.backends.console.EmailBackend
-      run: |
-        python manage.py test
+      - name: Run flake8
+        run: flake8 .
 
-  build-and-deploy:
+  test:
+    needs: lint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.13"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install poetry
+          poetry config virtualenvs.create false
+          poetry install --no-root
+
+      - name: Run tests
+        run: python manage.py test
+
+
+  build-and-push:
     needs: test
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
+
+    permissions:
+      contents: read
+      packages: write
 
     steps:
-    - uses: actions/checkout@v4
+      - name: Check out code
+        uses: actions/checkout@v4
 
-    - name: Build Docker images
-      run: |
-        docker build -t $DOCKER_IMAGE:latest .
-        docker build -t $DOCKER_IMAGE:latest-nginx -f nginx-Dockerfile .
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
 
-    - name: Log in to Container Registry
-      uses: docker/login-action@v2
-      with:
-        registry: ${{ env.REGISTRY }}
-        username: ${{ github.actor }}
-        password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Log in to GitHub Container Registry
+        run: |
+          echo "${{ secrets.GHCR_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
 
-    - name: Push Docker images
-      run: |
-        docker tag $DOCKER_IMAGE:latest ${{ env.REGISTRY }}/$DOCKER_IMAGE:latest
-        docker tag $DOCKER_IMAGE:latest-nginx ${{ env.REGISTRY }}/$DOCKER_IMAGE:latest-nginx
-        docker push ${{ env.REGISTRY }}/$DOCKER_IMAGE:latest
-        docker push ${{ env.REGISTRY }}/$DOCKER_IMAGE:latest-nginx
+      - name: Extract metadata
+        id: meta
+        uses: docker/metadata-action@v4
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.DOCKER_IMAGE }}
 
-    - name: Deploy to server
-      uses: appleboy/ssh-action@v1.0.3
-      with:
-        host: ${{ secrets.SERVER_HOST }}
-        username: ${{ secrets.SERVER_USER }}
-        key: ${{ secrets.SERVER_SSH_KEY }}
-        script: |
-          cd /path/to/your/app
-          
-          # Pull latest images
-          docker-compose pull
-          
-          # Backup database
-          docker-compose exec -T db pg_dump -U $POSTGRES_USER $POSTGRES_DB > backup_$(date +%Y%m%d_%H%M%S).sql
-          
-          # Stop and recreate containers
-          docker-compose down
-          docker-compose up -d
-          
-          # Run migrations
-          docker-compose exec -T web python manage.py migrate
-          
-          # Collect static files
-          docker-compose exec -T web python manage.py collectstatic --noinput
-          
-          # Restart application
-          docker-compose restart web
+      - name: Build and push Docker images
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          file: Dockerfile
+          push: true
+          tags: ${{ env.REGISTRY }}/${{ env.DOCKER_IMAGE }}:latest
+          labels: ${{ steps.meta.outputs.labels }}
 
-  database-migration:
-    needs: build-and-deploy
+      - name: Build and push nginx image
+        uses: docker/build-push-action@v4
+        with:
+          context: ./nginx
+          push: true
+          tags: ${{ env.REGISTRY }}/${{ env.DOCKER_IMAGE }}:latest-nginx
+          labels: ${{ steps.meta.outputs.labels }}
+
+  deploy:
+    needs: build-and-push
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
 
     steps:
-    - uses: actions/checkout@v4
+      - name: Check out code
+        uses: actions/checkout@v4
 
-    - name: Migrate data from local to production
-      uses: appleboy/ssh-action@v1.0.3
-      with:
-        host: ${{ secrets.SERVER_HOST }}
-        username: ${{ secrets.SERVER_USER }}
-        key: ${{ secrets.SERVER_SSH_KEY }}
-        script: |
-          # Этот шаг нужно адаптировать под ваш процесс миграции данных
-          # Пример: загрузка дампа данных с локальной БД
-          # scp local-backup.sql user@server:/tmp/
-          # docker-compose exec -T db psql -U $POSTGRES_USER -d $POSTGRES_DB -f /tmp/local-backup.sql
-          echo "Database migration would happen here"
+      - name: Create env file on server
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SERVER_IP }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_KEY }}
+          script: |
+            cd /path/to/your/app
+            cat > .env << EOF
+            DOMAIN=${{ secrets.DOMAIN || '_' }}
+            CERTBOT_EMAIL=${{ secrets.CERTBOT_EMAIL }}
+            DJANGO_SECRET_KEY=${{ secrets.DJANGO_SECRET_KEY }}
+            POSTGRES_DB=${{ secrets.POSTGRES_DB }}
+            POSTGRES_USER=${{ secrets.POSTGRES_USER }}
+            POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}
+            POSTGRES_HOST=${{ secrets.POSTGRES_HOST || 'db' }}
+            EMAIL_BACKEND=${{ secrets.EMAIL_BACKEND }}
+            EMAIL_HOST=${{ secrets.EMAIL_HOST }}
+            EMAIL_PORT=${{ secrets.EMAIL_PORT || '465' }}
+            EMAIL_USE_TLS=${{ secrets.EMAIL_USE_TLS || 'False' }}
+            EMAIL_USE_SSL=${{ secrets.EMAIL_USE_SSL || 'True' }}
+            EMAIL_HOST_USER=${{ secrets.EMAIL_HOST_USER }}
+            EMAIL_HOST_PASSWORD=${{ secrets.EMAIL_HOST_PASSWORD }}
+            # Добавьте эти переменные для образов
+            WEB_IMAGE=${{ env.REGISTRY }}/${{ env.DOCKER_IMAGE }}:latest
+            NGINX_IMAGE=${{ env.REGISTRY }}/${{ env.DOCKER_IMAGE }}:latest-nginx
+            EOF
+
+      - name: Login to container registry on server
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SERVER_IP }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_KEY }}
+          script: |
+            echo "${{ secrets.GHCR_TOKEN }}" | docker login ${{ env.REGISTRY }} -u ${{ github.actor }} --password-stdin
+
+      - name: Deploy application
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SERVER_IP }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_KEY }}
+          script: |
+            cd /path/to/your/app
+            
+            # Пул последних образов
+            docker-compose pull
+            
+            # Создаем бэкап базы данных
+            docker-compose exec -T db pg_dump -U ${{ secrets.POSTGRES_USER }} ${{ secrets.POSTGRES_DB }} > backup_$(date +%Y%m%d_%H%M%S).sql 2>/dev/null || echo "Backup skipped - database might not be running"
+            
+            # Остановка и пересборка контейнеров
+            docker-compose down
+            docker-compose up -d
+            
+            # Ждем, пока сервисы будут готовы к работе
+            sleep 50
+            
+            # Запускаем миграции БД
+            docker-compose exec -T web python manage.py migrate
+            
+            # Собираем статику
+            docker-compose exec -T web python manage.py collectstatic --noinput
+            
+            # Загружаем в БД объекты из фикстур.
+            docker-compose exec -T web python manage.py loaddata fixtures/users.json
+            docker-compose exec -T web python manage.py loaddata fixtures/product_categories.json
+            docker-compose exec -T web python manage.py loaddata fixtures/products.json
+            docker-compose exec -T web python manage.py loaddata fixtures/publications.json
+            docker-compose exec -T web python manage.py loaddata fixtures/publication_photos.json
+            
+            # Перезапуск приложения
+            docker-compose restart web
+            
+            # Запуск certbot, если есть доменное имя
+            if [ "${{ secrets.DOMAIN }}" != "_" ] && [ -n "${{ secrets.DOMAIN }}" ]; then
+              docker-compose run --rm certbot
+            fi
+
+      - name: Cleanup old images
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SERVER_IP }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_KEY }}
+          script: |
+            docker image prune -f

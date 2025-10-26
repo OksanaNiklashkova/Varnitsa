@@ -29,6 +29,34 @@
 - Docker Desktop (для Windows/Mac) или Docker Engine + Docker Compose (для Linux)
 
 - Git, GitHub.
+## Запуск сервера локально
+Склонируйте репозиторий проекта 
+```
+git clone https://github.com/OksanaNiklashkova/Varnitsa.git
+```
+Создайте .env файл с переменными по образцу.
+Эти переменные заполните так:
+* DOMAIN=_
+* WEB_IMAGE=varnitsa-web-local
+* NGINX_IMAGE=varnitsa-nginx-local
+
+Две последние применяются при сборке контейнеров, но если нужные image не будут найдены, контейнеры будут собраны по инструкции из Dockerfile.
+
+Запустите сборку контейнеров `docker-compose up --build`
+
+Для начального заполнения базы данных нужно воспользоваться фикстурами, имеющимися в папке fixtures:
+~~~
+docker-compose run --rm web python manage.py loaddata fixtures/users.json
+docker-compose run --rm web python manage.py loaddata fixtures/product_categories.json
+docker-compose run --rm web python manage.py loaddata fixtures/products.json
+docker-compose run --rm web python manage.py loaddata fixtures/publications.json
+docker-compose run --rm web python manage.py loaddata fixtures/publication_photos.json
+~~~
+Создайте superuser, если хотите авторизоваться в приложении и иметь доступ к CRUD продуктов и статей.
+
+После успешного запуска перейдите по адресу: http://localhost/
+
+Не авторизованный пользователь может, подтвердив, что ему более 18 лет, просматривать все страницы сайта и отправлять сообщения на странице "Контакты" -> Форма обращения.
 
 ## Запуск сервера с помощью CI/CD на виртуальной машине
 #### Подготовка сервера.
@@ -64,9 +92,7 @@ git clone https://github.com/OksanaNiklashkova/Varnitsa.git
 
 * CERTBOT_EMAIL - почта для запросов на получение SSL-сертификатов
 
-* DOCKER_HUB_USERNAME - ваш логин Docker Hub
-
-* DOCKER_HUB_ACCESS_TOKEN - токен Docker Hub
+* GHCR_TOKEN - токен GitHub Container Registry с правами `read:packages`, `write:packages`
 
 * SSH_KEY - приватный SSH ключ для доступа к серверу, указанный при создании виртуальной машины
 
@@ -90,7 +116,7 @@ git clone https://github.com/OksanaNiklashkova/Varnitsa.git
 
 * EMAIL_POR - по умолчанию 465
 
-* EMAIL_USE_TLS и EMAIL_USE_SSL - со значениями True или False в заивисимости от выбранного smtp-сервера
+* EMAIL_USE_TLS и EMAIL_USE_SSL - со значениями True или False в зависимости от выбранного smtp-сервера
 
 * EMAIL_HOST_USER и EMAIL_HOST_PASSWORD - адрес для отправки сообщений о поступивших обращениях на сайте и пароль от smtp-сервиса.
 

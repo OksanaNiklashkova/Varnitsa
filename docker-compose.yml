@@ -1,5 +1,6 @@
 services:
   web:
+    image: ${WEB_IMAGE}
     build:
       # создаем контейнер с джанго-приложением на основе файлов проекта по инструкциям в Dockerfile
       context: .
@@ -38,9 +39,11 @@ services:
       # забираем переменные окружения из .env
       - ./.env
     volumes:
+      # создаем том для данных БД, создаем нужные права для работы с БД
       - postgres_data:/var/lib/postgresql/data
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
     healthcheck:
+      # проверка, что БД работает перед запуском веб-приложения
       test: [ "CMD-SHELL", "pg_isready -U postgres" ]
       interval: 30s
       timeout: 10s
@@ -50,6 +53,7 @@ services:
       - app_network
 
   redis:
+    # собираем контейнер на основе публичного образа
     image: "redis:alpine"
     container_name: varnitsa_redis
     restart: unless-stopped
@@ -57,13 +61,17 @@ services:
       - app_network
 
   nginx:
+    image: ${NGINX_IMAGE}
+    # собираем контейнер на основе данных в папке nginx
     build:
       context: ./nginx
     container_name: nginx_proxy
     ports:
+      # открываем 80-й порт для http, 443 - для https
       - "80:80"
       - "443:443"
     volumes:
+      # монтируем тома для статики, медиа и данных certbot
       - static_volume:/app/staticfiles
       - media_volume:/app/media
       - ./data/certbot/conf:/etc/letsencrypt
@@ -75,6 +83,7 @@ services:
       - app_network
 
   certbot:
+    # собираем контейнер на основе публичного образа
     image: certbot/certbot
     container_name: certbot_service
     volumes:
