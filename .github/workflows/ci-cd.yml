@@ -111,6 +111,54 @@ jobs:
       - name: Check out code
         uses: actions/checkout@v4
 
+      - name: Configure Docker permissions
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SERVER_IP }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_KEY }}
+          script: |
+            # Добавляем пользователя в группу docker (если еще не добавлен)
+            sudo usermod -aG docker $USER 2>/dev/null || true
+
+      - name: Install Docker Compose on server
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SERVER_IP }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_KEY }}
+          script: |
+            # Проверяем, установлен ли уже Docker Compose
+            if command -v docker-compose &> /dev/null || command -v docker compose &> /dev/null; then
+              echo "Docker Compose is already installed"
+              docker-compose --version || docker compose version
+            else
+              echo "Installing Docker Compose..."
+              sudo curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+              sudo chmod +x /usr/local/bin/docker-compose
+              docker-compose --version
+            fi
+
+      - name: Create app directory and copy files
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SERVER_IP }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_KEY }}
+          script: |
+            # Создаем папку приложения
+            mkdir -p ~/varnitsa_app
+            cd ~/varnitsa_app
+            
+            # Копируем docker-compose.yml с GitHub
+            curl -o docker-compose.yml https://raw.githubusercontent.com/${{ github.repository }}/${{ github.ref_name }}/docker-compose.yml
+            
+            # Создаем необходимые папки для nginx и certbot
+            mkdir -p nginx
+            mkdir -p data/certbot/conf
+            mkdir -p data/certbot/www
+
+
       - name: Create env file on server
         uses: appleboy/ssh-action@v1.0.3
         with:
@@ -118,7 +166,7 @@ jobs:
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_KEY }}
           script: |
-            cd /path/to/your/app
+            cd ~/varnitsa_app
             cat > .env << EOF
             DOMAIN=${{ secrets.DOMAIN || '_' }}
             CERTBOT_EMAIL=${{ secrets.CERTBOT_EMAIL }}
@@ -139,6 +187,15 @@ jobs:
             NGINX_IMAGE=${{ env.REGISTRY }}/${{ env.DOCKER_IMAGE }}:latest-nginx
             EOF
 
+      - name: Copy nginx configuration
+        uses: appleboy/scp-action@v0.1.3
+        with:
+          host: ${{ secrets.SERVER_IP }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_KEY }}
+          source: "nginx/*"
+          target: "~/varnitsa_app/nginx/"
+
       - name: Login to container registry on server
         uses: appleboy/ssh-action@v1.0.3
         with:
@@ -155,7 +212,7 @@ jobs:
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_KEY }}
           script: |
-            cd /path/to/your/app
+            cd ~/varnitsa_app
             
             # Пул последних образов
             docker-compose pull
