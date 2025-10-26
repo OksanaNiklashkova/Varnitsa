@@ -111,43 +111,27 @@ jobs:
       - name: Check out code
         uses: actions/checkout@v4
 
-      - name: Configure Docker permissions
+      - name: Install and configure Docker on server
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.SERVER_IP }}
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_KEY }}
           script: |
-            # Добавляем пользователя в группу docker (если еще не добавлен)
-            sudo usermod -aG docker $USER 2>/dev/null || true
-
-      - name: Install Docker Compose on server
-        uses: appleboy/ssh-action@v1.0.3
-        with:
-          host: ${{ secrets.SERVER_IP }}
-          username: ${{ secrets.SSH_USER }}
-          key: ${{ secrets.SSH_KEY }}
-          script: |
-            # Устанавливаем Docker (если не установлен)
-            if ! command -v docker &> /dev/null; then
-              echo "Installing Docker..."
-              curl -fsSL https://get.docker.com -o get-docker.sh
-              sudo sh get-docker.sh
-              sudo usermod -aG docker $USER
-            fi
-            
-            # Устанавливаем Docker Compose (если не установлен)
-            if ! command -v docker-compose &> /dev/null && ! command -v docker compose &> /dev/null; then
+            # Проверяем доступность нового синтаксиса docker compose
+            if command -v docker compose &> /dev/null; then
+              echo "Using new docker compose syntax"
+              DOCKER_COMPOSE_CMD="docker compose"
+            elif command -v docker-compose &> /dev/null; then
+              echo "Using old docker-compose syntax"
+              DOCKER_COMPOSE_CMD="docker-compose"
+            else
               echo "Installing Docker Compose..."
               sudo curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
               sudo chmod +x /usr/local/bin/docker-compose
-              # Создаем симлинк для совместимости
-              sudo ln -sf /usr/local/bin/docker-compose /usr/bin/docker-compose
+              DOCKER_COMPOSE_CMD="docker-compose"
             fi
-            
-            # Проверяем установку
-            docker --version
-            docker-compose --version || docker compose version
+            $DOCKER_COMPOSE_CMD --version
 
       - name: Create app directory
         uses: appleboy/ssh-action@v1.0.3
@@ -193,7 +177,6 @@ jobs:
             EMAIL_USE_SSL=${{ secrets.EMAIL_USE_SSL || 'True' }}
             EMAIL_HOST_USER=${{ secrets.EMAIL_HOST_USER }}
             EMAIL_HOST_PASSWORD=${{ secrets.EMAIL_HOST_PASSWORD }}
-            # Добавьте эти переменные для образов
             WEB_IMAGE=${{ env.REGISTRY }}/${{ env.DOCKER_IMAGE }}:latest
             NGINX_IMAGE=${{ env.REGISTRY }}/${{ env.DOCKER_IMAGE }}:latest-nginx
             EOF
@@ -216,7 +199,7 @@ jobs:
           script: |
             echo "${{ secrets.GHCR_TOKEN }}" | docker login ${{ env.REGISTRY }} -u ${{ github.actor }} --password-stdin
 
-      - name: Deploy application
+      - name: Deploy application with new syntax
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.SERVER_IP }}
@@ -224,52 +207,69 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           script: |
             cd ~/varnitsa_app
-            
+
             # Останавливаем и удаляем старые контейнеры
             docker compose down
 
             # Пул последних образов
             docker compose pull
-            
+
             # Запускаем только базу данных и redis сначала
             docker compose up -d db redis
-            
+
             # Ждем пока база данных станет здоровой
             echo "Waiting for database to be ready..."
             sleep 30
-            
+
             # Проверяем статус базы данных
             docker compose ps
-            
-            # Запуск остальных контейнеров
+
+            # Запускаем веб-приложение отдельно
+            docker compose up -d web
+
+            # Ждем пока веб-приложение запустится
+            echo "Waiting for web application to start..."
+            sleep 30
+
+            # Проверяем статус веб-приложения
+            docker compose ps web
+
+            # Смотрим логи веб-приложения для диагностики
+            echo "=== Web container logs ==="
+            docker compose logs web --tail=20
+
+            # Если веб-приложение работает, запускаем остальные сервисы
             docker compose up -d
-            
-            # Ждем, пока сервисы будут готовы к работе
+
+            # Ждем пока все сервисы запустятся
             echo "Waiting for all services to start..."
             sleep 30
-            
+
             # Проверяем статус всех сервисов
             docker compose ps
-            
+
             # Запускаем миграции БД
             docker compose exec -T web python manage.py migrate
-            
+
             # Собираем статику
             docker compose exec -T web python manage.py collectstatic --noinput
-            
-            # Загружаем в БД объекты из фикстур.
+
+            # Загружаем фикстуры
             docker compose exec -T web python manage.py loaddata fixtures/users.json
             docker compose exec -T web python manage.py loaddata fixtures/product_categories.json
             docker compose exec -T web python manage.py loaddata fixtures/products.json
             docker compose exec -T web python manage.py loaddata fixtures/publications.json
             docker compose exec -T web python manage.py loaddata fixtures/publication_photos.json
-            
-            # Перезапуск приложения
+
+            # Перезапускаем веб-приложение
             docker compose restart web
-            
-            # Запуск certbot, если есть доменное имя
+
+            # Запускаем certbot только если домен установлен и не равен "_"
             if [ "${{ secrets.DOMAIN }}" != "_" ] && [ -n "${{ secrets.DOMAIN }}" ]; then
-              docker compose run --rm certbot
+              echo "Running certbot for domain: ${{ secrets.DOMAIN }}"
+              docker compose run --rm certbot certonly --webroot -w /var/www/certbot --force-renewal --email ${{ secrets.CERTBOT_EMAIL }} -d ${{ secrets.DOMAIN }} -d www.${{ secrets.DOMAIN }} --agree-tos
+            else
+              echo "Domain not set or set to '_', skipping SSL certificate generation"
             fi
 
       - name: Check application status
