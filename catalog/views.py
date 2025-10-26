@@ -118,10 +118,20 @@ def invalidate_products_cache(sender, **kwargs):
     cache_keys = [
         "products_queryset_v2",
     ]
-    if instance and hasattr(instance, "category") and instance.category:
-        # Удаляем кеш для конкретной категории
-        category_id = instance.category.id
-        cache_keys.append(f"products_by_category_{category_id}_v2")
+
+    if instance and hasattr(instance, "category"):
+        try:
+            # Пробуем разные подходы
+            if hasattr(instance.category, 'all'):  # ManyToMany
+                category_ids = instance.category.values_list('id', flat=True)
+                for category_id in category_ids:
+                    cache_keys.append(f"products_by_category_{category_id}_v2")
+            else:  # ForeignKey
+                cache_keys.append(f"products_by_category_{instance.category.id}_v2")
+        except Exception as e:
+            # Логируем ошибку, но не падаем
+            print(f"Cache invalidation error: {e}")
+
     for key in cache_keys:
         cache.delete(key)
 
