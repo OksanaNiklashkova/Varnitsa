@@ -243,37 +243,37 @@ jobs:
             ls -la nginx/
             
             # Пул последних образов
-            docker-compose pull
+            docker compose pull
             
             # Создаем бэкап базы данных
-            docker-compose exec -T db pg_dump -U ${{ secrets.POSTGRES_USER }} ${{ secrets.POSTGRES_DB }} > backup_$(date +%Y%m%d_%H%M%S).sql 2>/dev/null || echo "Backup skipped - database might not be running"
+            docker compose exec -T db pg_dump -U ${{ secrets.POSTGRES_USER }} ${{ secrets.POSTGRES_DB }} > backup_$(date +%Y%m%d_%H%M%S).sql 2>/dev/null || echo "Backup skipped - database might not be running"
             
             # Остановка и пересборка контейнеров
-            docker-compose down
-            docker-compose up -d
+            docker compose down
+            docker compose up -d
             
             # Ждем, пока сервисы будут готовы к работе
             sleep 50
             
             # Запускаем миграции БД
-            docker-compose exec -T web python manage.py migrate
+            docker compose exec -T web python manage.py migrate
             
             # Собираем статику
-            docker-compose exec -T web python manage.py collectstatic --noinput
+            docker compose exec -T web python manage.py collectstatic --noinput
             
             # Загружаем в БД объекты из фикстур.
-            docker-compose exec -T web python manage.py loaddata fixtures/users.json
-            docker-compose exec -T web python manage.py loaddata fixtures/product_categories.json
-            docker-compose exec -T web python manage.py loaddata fixtures/products.json
-            docker-compose exec -T web python manage.py loaddata fixtures/publications.json
-            docker-compose exec -T web python manage.py loaddata fixtures/publication_photos.json
+            docker compose exec -T web python manage.py loaddata fixtures/users.json
+            docker compose exec -T web python manage.py loaddata fixtures/product_categories.json
+            docker compose exec -T web python manage.py loaddata fixtures/products.json
+            docker compose exec -T web python manage.py loaddata fixtures/publications.json
+            docker compose exec -T web python manage.py loaddata fixtures/publication_photos.json
             
             # Перезапуск приложения
-            docker-compose restart web
+            docker compose restart web
             
             # Запуск certbot, если есть доменное имя
             if [ "${{ secrets.DOMAIN }}" != "_" ] && [ -n "${{ secrets.DOMAIN }}" ]; then
-              docker-compose run --rm certbot
+              docker compose run --rm certbot
             fi
 
       - name: Cleanup old images
