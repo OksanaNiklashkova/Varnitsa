@@ -3,7 +3,7 @@ name: Deploy Django App
 on: [push, pull_request]
 
 env:
-  DOCKER_IMAGE: OksanaNiklashkova/varnitsa-web
+  DOCKER_IMAGE: oksananiklashkova/varnitsa-web
   REGISTRY: ghcr.io
 
 jobs:
