@@ -220,6 +220,9 @@ jobs:
             # Ждем пока база данных станет здоровой
             echo "Waiting for database to be ready..."
             sleep 30
+            
+            # Устанавливаем необходимое расширение
+            docker compose exec db psql -U your_username -d your_database -c "CREATE EXTENSION IF NOT EXISTS pg_trgm;"
 
             # Проверяем статус базы данных
             docker compose ps
@@ -264,12 +267,11 @@ jobs:
             # Перезапускаем веб-приложение
             docker compose restart web
 
-            # Запускаем certbot только если домен установлен и не равен "_"
-            if [ "${{ secrets.DOMAIN }}" != "_" ] && [ -n "${{ secrets.DOMAIN }}" ]; then
-              echo "Running certbot for domain: ${{ secrets.DOMAIN }}"
-              docker compose run --rm certbot certonly --webroot -w /var/www/certbot --force-renewal --email ${{ secrets.CERTBOT_EMAIL }} -d ${{ secrets.DOMAIN }} -d www.${{ secrets.DOMAIN }} --agree-tos
+            if [ "$DOMAIN" != "localhost" ] && [ -n "$DOMAIN" ] && [[ "$DOMAIN" == *.* ]]; then
+            echo "Running certbot for domain: $DOMAIN"
+            docker compose run --rm certbot certonly --webroot -w /var/www/certbot --force-renewal --email your-email@domain.com -d $DOMAIN -d www.$DOMAIN --agree-tos
             else
-              echo "Domain not set or set to '_', skipping SSL certificate generation"
+              echo "Domain not set or invalid, skipping SSL certificate generation"
             fi
 
       - name: Check application status
