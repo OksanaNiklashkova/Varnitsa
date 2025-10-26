@@ -165,7 +165,7 @@ jobs:
             cat > .env << EOF
             DOMAIN=${{ secrets.DOMAIN || '_' }}
             CERTBOT_EMAIL=${{ secrets.CERTBOT_EMAIL }}
-            DJANGO_SECRET_KEY=${{ secrets.DJANGO_SECRET_KEY }}
+            SECRET_KEY=${{ secrets.DJANGO_SECRET_KEY }}
             POSTGRES_DB=${{ secrets.POSTGRES_DB }}
             POSTGRES_USER=${{ secrets.POSTGRES_USER }}
             POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}

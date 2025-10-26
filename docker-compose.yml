@@ -65,7 +65,7 @@ services:
     # собираем контейнер на основе данных в папке nginx
     build:
       context: ./nginx
-    container_name: nginx_proxy
+    container_name: nginx
     ports:
       # открываем 80-й порт для http, 443 - для https
       - "80:80"
