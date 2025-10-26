@@ -128,16 +128,26 @@ jobs:
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_KEY }}
           script: |
-            # Проверяем, установлен ли уже Docker Compose
-            if command -v docker-compose &> /dev/null || command -v docker compose &> /dev/null; then
-              echo "Docker Compose is already installed"
-              docker-compose --version || docker compose version
-            else
+            # Устанавливаем Docker (если не установлен)
+            if ! command -v docker &> /dev/null; then
+              echo "Installing Docker..."
+              curl -fsSL https://get.docker.com -o get-docker.sh
+              sudo sh get-docker.sh
+              sudo usermod -aG docker $USER
+            fi
+            
+            # Устанавливаем Docker Compose (если не установлен)
+            if ! command -v docker-compose &> /dev/null && ! command -v docker compose &> /dev/null; then
               echo "Installing Docker Compose..."
               sudo curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
               sudo chmod +x /usr/local/bin/docker-compose
-              docker-compose --version
+              # Создаем симлинк для совместимости
+              sudo ln -sf /usr/local/bin/docker-compose /usr/bin/docker-compose
             fi
+            
+            # Проверяем установку
+            docker --version
+            docker-compose --version || docker compose version
 
       - name: Create app directory and copy files
         uses: appleboy/ssh-action@v1.0.3
@@ -205,6 +215,21 @@ jobs:
           script: |
             echo "${{ secrets.GHCR_TOKEN }}" | docker login ${{ env.REGISTRY }} -u ${{ github.actor }} --password-stdin
 
+      - name: Test Docker and Docker Compose
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SERVER_IP }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_KEY }}
+          script: |
+            # Проверяем, что Docker и Docker Compose работают
+            echo "Testing Docker..."
+            docker --version
+            echo "Testing Docker Compose..."
+            docker-compose --version || docker compose version
+            echo "Testing Docker commands..."
+            docker ps
+
       - name: Deploy application
         uses: appleboy/ssh-action@v1.0.3
         with:
@@ -213,6 +238,9 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           script: |
             cd ~/varnitsa_app
+            # Проверяем, что файлы на месте
+            ls -la
+            ls -la nginx/
             
             # Пул последних образов
             docker-compose pull
