@@ -46,6 +46,7 @@
                     <!-- Контент -->
                     <div class="col-md-12 col-lg-7">
                         <div class="card-body product-card-body d-flex flex-column">
+                            <a href="{% url 'catalog:product' product.pk %}">
                             <div class="d-flex justify-content-between align-items-start mb-2">
                                 <a href="{% url 'catalog:product' product.pk %}" style="text-decoration: none;">
                                     <h4 class="card-title" style="color: #5D4037;">{{ product.product_name }}</h4>
@@ -72,6 +73,7 @@
                                     {{ product.specification|linebreaks|truncatewords:20 }}
                                 </div>
                             </div>
+                            </a>
                         </div>
                     </div>
                 </div>
