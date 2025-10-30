@@ -16,23 +16,14 @@
                         Пиво и безалкогольные напитки высокого качества от производителя
                     </p>
                 </div>
-                 {% if user.is_authenticated %}
-            <div class="d-flex justify-content-end align-items-center gap-2 py-1 px-3 rounded">
-                <form method="post" action="{% url 'users:logout' %}">
-                    {% csrf_token %}
-                    <button type="submit" class="btn btn-outline-light btn-sm">Выход</button>
-                </form>
-            </div>
-            {% else %}
-            <div class="d-flex justify-content-end align-items-center gap-2 py-1 px-3 rounded">
-                <a class="btn btn-outline-light btn-sm" href="{% url 'users:login' %}">Вход</a>
-            </div>
-            {% endif %}
+
+            <div class="d-flex justify-content-end align-items-center gap-2 py-1 px-3 rounded"></div>
+
             </div>
 
             <nav class="nav nav-pills nav-justified align-items-center" style="margin: 10px; gap: 10px;">
                 <a class="custom-menu-btn" href="{% url 'catalog:home' %}">Главная</a>
-                <a class="custom-menu-btn" href="{% url 'blog:info_list' %}">Завод "Варница"</a>
+                <a class="custom-menu-btn" href="{% url 'blog:info_list' %}">О заводе</a>
 
                 <div class="dropdown d-flex flex-fill">
                     <a class="custom-menu-btn dropdown-toggle"
@@ -56,7 +47,3 @@
         </div>
     </div>
 </div>
-
-<style>
-
-</style>

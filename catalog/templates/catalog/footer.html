@@ -22,8 +22,21 @@
                 Материалы размещенные на сайте носят информационный характер и не являются публичной офертой.<br>Данный сайт не занимается продажей
             </div>
         </div>
+        {% if user.is_authenticated %}
+            <div class="d-flex justify-content-end align-items-center gap-2 py-1 px-3 rounded">
+                <form method="post" action="{% url 'users:logout' %}">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-link" style="color: #6D4C41; text-decoration: none;">Выход</button>
+                </form>
+            </div>
+            {% else %}
+            <div class="d-flex justify-content-end align-items-center gap-2 py-1 px-3 rounded">
+                <a class="btn btn-link" style="color: #6D4C41; text-decoration: none;" href="{% url 'users:login' %}">вход для администратора</a>
+            </div>
+            {% endif %}
+            </div>
     </div>
-</div>
+
 <div class="warning-alcohol__wrapper">
     чрезмерное употребление алкоголя вредит вашему здоровью
 </div>

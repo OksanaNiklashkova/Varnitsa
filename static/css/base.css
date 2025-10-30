@@ -64,7 +64,7 @@
 
 .custom-menu-btn:active {
     transform: translateY(0);
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 3px rgba(0, 0, 0, 0.1);
 }
 
 .dropdown-menu {
@@ -145,7 +145,7 @@
     background:
         radial-gradient(circle at 20% 80%, rgba(255, 107, 107, 0.8), transparent 70%),
         linear-gradient(to bottom, white, #FFEAA7, #C04000, white);
-    border-right: 3px solid #6D4C41;
+    border: 1px solid #6D4C41;
 }
 
 /* Одинаковая высота карточек */
