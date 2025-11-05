@@ -5,10 +5,7 @@ from django.db import models
 class Publication(models.Model):
     """Модель записи в блоге"""
 
-    PUBLICATION_TYPES = [
-        ("full", "Статья для блога"),
-        ("small", "Заметка"),
-    ]
+    PUBLICATION_TYPES = [("full", "Статья для блога"), ("small", "Заметка"), ("news", "Новость")]
 
     title = models.CharField(max_length=150, verbose_name="Заголовок")
     rubric = models.CharField(max_length=150, blank=True, null=True, verbose_name="Рубрика")
@@ -28,6 +25,9 @@ class Publication(models.Model):
 
     def is_small_publication(self):
         return self.publication_type == "small"
+
+    def is_news_publication(self):
+        return self.publication_type == "news"
 
     class Meta:
         verbose_name = "публикация"

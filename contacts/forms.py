@@ -1,4 +1,7 @@
 from django import forms
+from django.urls import reverse
+from django.utils.safestring import mark_safe
+
 from .models import ContactRequest
 import time
 
@@ -19,37 +22,32 @@ class ContactForm(forms.ModelForm):
             "subject": "Тема сообщения",
             "message": "Сообщение",
         }
+        help_texts = {
+            "request_type": "Выберите тип обращения, кликнув на строку выше",
+            "email": "Введите ваш email для обратной связи",
+            "consent_newsletter": "Отметьте, если хотите получать новости и уведомления",
+        }
         widgets = {
-            "request_type": forms.Select(attrs={"class": "form-select", "help-text": "Выберите тип обращения"}),
-            "subject": forms.Textarea(
-                attrs={"rows": 2, "class": "form-control", "help-text": "Введите тему сообщения"}
-            ),
-            "message": forms.Textarea(
-                attrs={"rows": 10, "class": "form-control", "help-text": "Опишите вашу проблему или вопрос подробно"}
-            ),
-            "name": forms.TextInput(attrs={"class": "form-control", "help-text": "Ваше имя (необязательно)"}),
-            "email": forms.EmailInput(
-                attrs={"class": "form-control", "help-text": "Введите ваш email для обратной связи"}
-            ),
-            "consent_personal_data": forms.CheckboxInput(
-                attrs={
-                    "class": "form-check-input",
-                    "help-text": """Поставив галочку в этом пункте,
-                    вы даете согласие на обработку ваших персональных данных""",
-                }
-            ),
-            "consent_newsletter": forms.CheckboxInput(
-                attrs={
-                    "class": "form-check-input",
-                    "help-text": "Отметьте, если хотите получать новости и уведомления",
-                }
-            ),
+            "request_type": forms.Select(attrs={"class": "form-select"}),
+            "subject": forms.Textarea(attrs={"rows": 2, "class": "form-control"}),
+            "message": forms.Textarea(attrs={"rows": 10, "class": "form-control"}),
+            "name": forms.TextInput(attrs={"class": "form-control"}),
+            "email": forms.EmailInput(attrs={"class": "form-control"}),
+            "consent_personal_data": forms.CheckboxInput(attrs={"class": "form-check-input"}),
+            "consent_newsletter": forms.CheckboxInput(attrs={"class": "form-check-input"}),
         }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         # Добавляем начальные значения для скрытых полей
         self.fields["timestamp"].initial = str(time.time())
+        # формируем ссылку на страницу с текстом согласия на обработку персональных данных
+        consent_url = reverse("contacts:consent_form")
+        self.fields["consent_personal_data"].help_text = mark_safe(
+            '''Поставив галочку в этом пункте, вы даете
+            <a href="{}" target="_blank" class="text-decoration-none">согласие на обработку персональных данных'''
+            "</a>".format(consent_url)
+        )
 
     def clean_honeypot(self):
         """Проверка honeypot поля"""

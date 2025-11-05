@@ -5,7 +5,16 @@
 {% block background_class %}main-background{% endblock %}
 {% block content %}
 {% include 'catalog/search_form.html' %}
+{% if user.is_authenticated %}
+<div class="row">
+    <a href="{% url 'blog:publication_create' %}" class="btn btn-lg btn-block" type="submit"
+       style="color: #A52A2A; box-shadow: 4px 4px 10px #A52A2A; margin-bottom: 10px; margin-top: 10px;">Создать новость</a>
+</div>
+{% endif %}
+{% include 'blog/news_publication_list.html' %}
+
 <div class="card border-2 rounded-4 shadow-sm mb-3 custom-card" style="border-color: #6D4C41; background: white;">
+
     <div class="card-body p-4">
         <div class="row align-items-start">
             <!-- Изображение -->
@@ -32,9 +41,6 @@
             </div>
         </div>
     </div>
-</div>
-
-<div class="card border-2 rounded-2 shadow-sm mb-3" style="border-color: #6D4C41; background: white;">
     <div class="card-body p-4">
         <div class="row align-items-start">
             <!-- Текст -->

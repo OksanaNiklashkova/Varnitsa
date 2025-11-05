@@ -17,6 +17,10 @@ class SuccessTemplateView(generic.TemplateView):
     template_name = "contacts/success.html"
 
 
+class ConsentTemplateView(generic.TemplateView):
+    template_name = "contacts/consent_form.html"
+
+
 class ContactRequestCreateView(generic.CreateView):
     """Контроллер для создания обращения на сайте"""
 

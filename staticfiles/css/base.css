@@ -99,7 +99,7 @@
 
 .header-with-wave::before {
     content: '';
-    position: fixed;
+    position: absolute;
     top: 0;
     left: 0;
     width: 100%;
@@ -145,7 +145,7 @@
     background:
         radial-gradient(circle at 20% 80%, rgba(255, 107, 107, 0.8), transparent 70%),
         linear-gradient(to bottom, white, #FFEAA7, #C04000, white);
-    border-right: 3px solid #6D4C41;
+    border: 1px solid #6D4C41;
 }
 
 /* Одинаковая высота карточек */
@@ -159,6 +159,64 @@
 .custom-card {
     height: 100%;
     border: 3px solid #6D4C41;
+}
+
+/* Контейнер для новостной карточки */
+.custom-card-news {
+    height: 100%;
+    border: 3px solid #A52A2A;
+    box-shadow:
+        0 4px 8px rgba(210, 180, 140, 0.4),
+        0 8px 16px rgba(210, 180, 140, 0.2);
+    position: relative;
+    transition: all 0.3s ease;
+    background: white;
+    overflow: visible; /* Разрешаем свечению выходить за границы */
+}
+
+/* Обертка для создания изолированного контекста */
+.custom-card-news::before {
+    content: '';
+    position: absolute;
+    top: -10px;
+    left: -10px;
+    right: -10px;
+    bottom: -10px;
+    background: linear-gradient(
+        45deg,
+        #A52A2A 0%,
+        #D2B48C 25%,
+        #FFD700 50%,
+        #D2B48C 75%,
+        #A52A2A 100%
+    );
+    border-radius: 15px;
+    z-index: -1; /* Помещаем ПОД карточку */
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    filter: blur(8px); /* Добавляем размытие для эффекта свечения */
+}
+
+/* Пульсация рамки при наведении */
+.custom-card-news::before {
+    opacity: 0.8;
+    animation: border-pulse 2s infinite;
+}
+
+/* Анимация пульсации рамки */
+@keyframes border-pulse {
+    0% {
+        transform: scale(1);
+        opacity: 0.6;
+    }
+    50% {
+        transform: scale(1.02);
+        opacity: 0.9;
+    }
+    100% {
+        transform: scale(1);
+        opacity: 0.6;
+    }
 }
 
 /* Контейнер для контента карточки */

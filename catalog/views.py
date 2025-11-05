@@ -18,9 +18,37 @@ from users.mixins import AgeVerificationRequiredMixin, ModeratorRequiredMixin
 class HomeView(AgeVerificationRequiredMixin, TemplateView):
     template_name = "catalog/home.html"
 
-    @method_decorator(cache_page(60 * 30), name="dispatch")
-    def dispatch(self, *args, **kwargs):
-        return super().dispatch(*args, **kwargs)
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        # Получаем новости для включения в шаблон
+        from blog.models import Publication
+
+        news_publications = (
+            Publication.objects.filter(is_published=True, publication_type="news")
+            .prefetch_related("photos")
+            .order_by("-created_at")[:5]
+        )
+        context["news_publications"] = news_publications
+        return context
+
+    def get(self, request, *args, **kwargs):
+        # Для аутентифицированных пользователей - без кеша
+        if request.user.is_authenticated:
+            return super().get(request, *args, **kwargs)
+
+        # Для анонимных - кешируем
+        cache_key = f"home_page_{request.session.session_key}"
+        cached_response = cache.get(cache_key)
+
+        if cached_response is None:
+            response = super().get(request, *args, **kwargs)
+            # Рендерим только GET-запросы (не редиректы)
+            if hasattr(response, "render"):
+                response.render()
+                cache.set(cache_key, response, 60 * 15)
+            return response
+
+        return cached_response
 
 
 class ProductCreateView(ModeratorRequiredMixin, CreateView):
@@ -122,8 +150,8 @@ def invalidate_products_cache(sender, **kwargs):
     if instance and hasattr(instance, "category"):
         try:
             # Пробуем разные подходы
-            if hasattr(instance.category, 'all'):  # ManyToMany
-                category_ids = instance.category.values_list('id', flat=True)
+            if hasattr(instance.category, "all"):  # ManyToMany
+                category_ids = instance.category.values_list("id", flat=True)
                 for category_id in category_ids:
                     cache_keys.append(f"products_by_category_{category_id}_v2")
             else:  # ForeignKey

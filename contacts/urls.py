@@ -8,4 +8,5 @@ urlpatterns = [
     path("page/", views.ContactsPageView.as_view(), name="page"),
     path("request_form/", views.ContactRequestCreateView.as_view(), name="request_form"),
     path("success/", views.SuccessTemplateView.as_view(), name="success"),
+    path("consent_form/", views.ConsentTemplateView.as_view(), name="consent_form"),
 ]

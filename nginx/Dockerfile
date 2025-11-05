@@ -10,9 +10,7 @@ RUN mkdir -p /app/staticfiles /app/media
 # Копируем шаблон конфигурации
 COPY nginx.conf /etc/nginx/nginx.conf.template
 
-# Копируем скрипт запуска
-COPY start-nginx.sh /start-nginx.sh
-RUN chmod +x /start-nginx.sh
+
 EXPOSE 80 443
 
-CMD ["/start-nginx.sh"]
+CMD sh -c "if [ \"$DOMAIN\" != \"_\" ]; then mkdir -p /var/www/certbot; fi && envsubst '\$DOMAIN' < /etc/nginx/nginx.conf.template > /etc/nginx/nginx.conf && exec nginx -g 'daemon off;'"

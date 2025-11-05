@@ -1,0 +1,89 @@
+{% load static %}
+
+{% block content %}
+{% if news_publications %}
+<div class="container" style="color: #A52A2A;">
+
+{% for publication in news_publications %}
+    <div class="col-12 mb-4">
+    <div class="card custom-card-news position-relative">
+    <div class="row g-0">
+    {% if forloop.counter|divisibleby:2 %}
+        <div class="col-md-4 col-lg-4">
+        <a href="{% url 'blog:publication_detail' publication.pk %}">
+            <div class="card news_image h-100 d-flex align-items-center justify-content-center p-3">
+
+                    <img src="{{ publication.preview.url }}"
+                     class="img-fluid rounded-start"
+                     alt="{{ publication.title }}"
+                     style="max-height: 220px; width: auto; border: solid brown 3px;">
+
+            </div>
+        </a>
+        </div>
+        <!-- Контент справа -->
+        <div class="col-md-8 col-lg-8">
+            <div class="card-body h-100 d-flex flex-column">
+                <div class="d-flex justify-content-between align-items-start mb-2">
+                    <h5 class="card-title" style="color: #A52A2A; font-size: 1.4rem; line-height: 1.5;">{{ publication.title }}</h5>
+                </div>
+
+                <div class="flex-grow-1">
+                    {% if publication.rubric %}
+                    <p class="mb-1" style="color: #A52A2A; font-weight: 500;">{{ publication.rubric}}</p>
+                    {% endif %}
+
+                    <div style="color: #5D4037; font-size: 1.1rem; line-height: 1.5;">
+                        {{ publication.text|linebreaks|truncatewords:33 }}
+                        <a href="{% url 'blog:publication_detail' publication.pk %}" class="pulse-cup-btn" style="flex-shrink: 0;">
+                            <img src="{% static 'images/catalog/podrobnee.png' %}" alt="Подробнее о {{ publication.title }}">
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% else %}
+        <!-- Контент слева -->
+        <div class="col-md-8 col-lg-8">
+            <div class="card-body h-100 d-flex flex-column">
+                <div class="d-flex justify-content-between align-items-start mb-2">
+                    <h5 class="card-title" style="color: #A52A2A; font-size: 1.4rem; line-height: 1.5;">{{ publication.title }}</h5>
+                </div>
+
+                <div class="flex-grow-1">
+                    {% if publication.rubric %}
+                    <p class="mb-1" style="color: #A52A2A; font-weight: 500;">{{ publication.rubric}}</p>
+                    {% endif %}
+
+                    <div style="color: #5D4037; font-size: 1.1rem; line-height: 1.5;">
+                        {{ publication.text|linebreaks|truncatewords:33}}
+                        <a href="{% url 'blog:publication_detail' publication.pk %}" class="pulse-cup-btn" style="flex-shrink: 0;">
+                            <img src="{% static 'images/catalog/podrobnee.png' %}" alt="Подробнее о {{ publication.title }}">
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Изображение справа -->
+        <div class="col-md-4 col-lg-4">
+            <a href="{% url 'blog:publication_detail' publication.pk %}">
+            <div class="card news_image h-100 d-flex align-items-center justify-content-center p-3">
+
+                    <img src="{{ publication.preview.url }}"
+                     class="img-fluid rounded-start"
+                     alt="{{ publication.title }}"
+                     style="max-height: 220px; width: auto; border: solid brown 3px;">
+
+            </div>
+        </a>
+        </div>
+    {% endif %}
+    </div>
+</div>
+
+</div>
+{% endfor %}
+</div>
+{% endif %}
+{% endblock %}

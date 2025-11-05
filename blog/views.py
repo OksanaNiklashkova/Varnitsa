@@ -5,6 +5,7 @@ from django.dispatch import receiver
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import cache_page
+from django.views.decorators.vary import vary_on_cookie
 from django.views.generic import ListView, CreateView, DeleteView, UpdateView, DetailView
 
 from blog.forms import PublicationForm, MultiplePhotoForm
@@ -38,10 +39,35 @@ class PublicationListView(AgeVerificationRequiredMixin, ListView):
         )
 
 
+class NewsPublicationListView(AgeVerificationRequiredMixin, ListView):
+    """Контроллер получения списка статей"""
+
+    model = Publication
+    template_name = "blog/news_publication_list.html"
+    context_object_name = "news_publications"
+
+    def get_queryset(self):
+        """Метод получения списка статей с кешированием"""
+        cache_key = "news_publications_queryset_v2"
+        queryset = cache.get(cache_key)
+        if queryset is None:
+            queryset = self._get_fresh_queryset()
+            cache.set(cache_key, queryset, 60 * 15)
+        return queryset
+
+    def _get_fresh_queryset(self):
+        """Метод обновления списка статей"""
+        return (
+            Publication.objects.filter(is_published=True, publication_type="news")
+            .prefetch_related("photos")
+            .order_by("-created_at")
+        )
+
+
 # Сигналы для инвалидации кеша при изменении публикаций
 @receiver([post_save, post_delete], sender=Publication)
 def invalidate_publication_cache(sender, **kwargs):
-    cache_keys = ["publications_queryset", "publications_queryset_v2"]
+    cache_keys = ["publications_queryset", "publications_queryset_v2", "news_publications_queryset_v2"]
     for key in cache_keys:
         cache.delete(key)
 
@@ -59,7 +85,6 @@ class SmallPublicationListView(AgeVerificationRequiredMixin, ListView):
         return Publication.objects.filter(is_published=True, publication_type="small")
 
 
-@method_decorator(cache_page(60 * 15), name="dispatch")
 class PublicationDetailView(AgeVerificationRequiredMixin, DetailView):
     """Контроллер просмотра одной статьи"""
 
@@ -82,6 +107,15 @@ class PublicationDetailView(AgeVerificationRequiredMixin, DetailView):
         publication.views_counter += 1
         publication.save()
         return response
+
+    @method_decorator(vary_on_cookie)
+    def dispatch(self, request, *args, **kwargs):
+        # Для аутентифицированных пользователей - без кеша
+        if request.user.is_authenticated:
+            return super().dispatch(request, *args, **kwargs)
+
+        # Для анонимных используем кеширование
+        return cache_page(60 * 30)(super().dispatch)(request, *args, **kwargs)
 
 
 class PublicationCreateView(ModeratorRequiredMixin, CreateView):
