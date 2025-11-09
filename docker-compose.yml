@@ -6,7 +6,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: varnitsa
+    container_name: varnitsa_web
     # собираем статику, применяем миграции и передаем в gunicorn
     command: >
       sh -c "python manage.py collectstatic --noinput &&

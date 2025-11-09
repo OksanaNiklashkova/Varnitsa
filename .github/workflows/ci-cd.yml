@@ -228,18 +228,18 @@ jobs:
             docker compose ps
 
             # Запускаем веб-приложение отдельно
-            docker compose up -d web
+            docker compose up -d varnitsa_web
 
             # Ждем пока веб-приложение запустится
             echo "Waiting for web application to start..."
             sleep 30
 
             # Проверяем статус веб-приложения
-            docker compose ps web
+            docker compose ps varnitsa_web
 
             # Смотрим логи веб-приложения для диагностики
             echo "=== Web container logs ==="
-            docker compose logs web --tail=20
+            docker compose logs varnitsa_web --tail=20
 
             # Если веб-приложение работает, запускаем остальные сервисы
             docker compose up -d
@@ -252,20 +252,20 @@ jobs:
             docker compose ps
 
             # Запускаем миграции БД
-            docker compose exec -T web python manage.py migrate
+            docker compose exec -T varnitsa_web python manage.py migrate
 
             # Собираем статику
-            docker compose exec -T web python manage.py collectstatic --noinput
+            docker compose exec -T varnitsa_web python manage.py collectstatic --noinput
 
             # Загружаем фикстуры
-            docker compose exec -T web python manage.py loaddata fixtures/users.json
-            docker compose exec -T web python manage.py loaddata fixtures/product_categories.json
-            docker compose exec -T web python manage.py loaddata fixtures/products.json
-            docker compose exec -T web python manage.py loaddata fixtures/publications.json
-            docker compose exec -T web python manage.py loaddata fixtures/publication_photos.json
+            docker compose exec -T varnitsa_web python manage.py loaddata fixtures/users.json
+            docker compose exec -T varnitsa_web python manage.py loaddata fixtures/product_categories.json
+            docker compose exec -T varnitsa_web python manage.py loaddata fixtures/products.json
+            docker compose exec -T varnitsa_web python manage.py loaddata fixtures/publications.json
+            docker compose exec -T varnitsa_web python manage.py loaddata fixtures/publication_photos.json
 
             # Перезапускаем веб-приложение
-            docker compose restart web
+            docker compose restart varnitsa_web
 
             if [[ "$DOMAIN" == *.* ]] && [ "$DOMAIN" != "localhost" ] && [ "$DOMAIN" != "_" ] && [ -n "$DOMAIN" ]; then
                 echo "Running certbot for domain: $DOMAIN"
