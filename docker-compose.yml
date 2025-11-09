@@ -1,8 +1,9 @@
 services:
-  web:
+  varnitsa_web:
+    # проверяем есть ли готовый образ для веб-приложения
     image: ${WEB_IMAGE}
+    # если нет, собираем на основе файлов проекта по инструкциям в Dockerfile
     build:
-      # создаем контейнер с джанго-приложением на основе файлов проекта по инструкциям в Dockerfile
       context: .
       dockerfile: Dockerfile
     container_name: varnitsa
@@ -76,7 +77,7 @@ services:
       - ./data/certbot/conf:/etc/letsencrypt
       - ./data/certbot/www:/var/www/certbot
     depends_on:
-      - web
+      - varnitsa_web
     restart: unless-stopped
     networks:
       - app_network

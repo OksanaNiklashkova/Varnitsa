@@ -30,8 +30,8 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
-    "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.middleware.security.SecurityMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -128,8 +128,8 @@ if CACHE_ENABLED:
     CACHES = {
         "default": {
             "BACKEND": "django.core.cache.backends.redis.RedisCache",
-            # 'LOCATION': 'redis://127.0.0.1:6379/1', # для разработки
-            "LOCATION": "redis://redis:6379/1",  # для продакшена
+            'LOCATION': 'redis://127.0.0.1:6379/1', # для разработки
+            # "LOCATION": "redis://redis:6379/1",  # для продакшена
         }
     }
 

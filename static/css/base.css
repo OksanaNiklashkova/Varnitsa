@@ -23,6 +23,105 @@
 }
 
 /* Стили для header и footer */
+
+/* Стили для адаптивного хедера */
+.header-with-wave.compact {
+    padding: 0.25rem 0;
+}
+
+.header-main-content,
+.header-compact-content {
+    transition: all 0.3s ease;
+}
+
+.header-logo {
+    transition: all 0.3s ease;
+}
+
+.header-title {
+    transition: all 0.3s ease;
+}
+
+.header-subtitle {
+    transition: all 0.3s ease;
+    opacity: 1;
+}
+
+.header-nav {
+    transition: all 0.3s ease;
+}
+
+/* Стили для компактного режима */
+.header-with-wave.compact .header-main-content {
+    display: none !important;
+}
+
+.header-with-wave.compact .header-compact-content {
+    display: flex !important;
+}
+
+.header-with-wave.compact .header-nav {
+    margin: 5px !important;
+    gap: 5px !important;
+}
+
+/* Мобильные стили */
+@media (max-width: 768px) {
+    .header-main-content {
+        flex-direction: column !important;
+        text-align: center !important;
+        margin: 0.5rem 0 !important;
+    }
+
+    .logo {
+        margin: 0 0 0.5rem 0 !important;
+    }
+
+    .header-logo {
+        max-width: 120px !important;
+        height: auto !important;
+    }
+
+    .header-title {
+        font-size: clamp(2rem, 6vw, 3rem) !important;
+        margin-bottom: 0.25rem !important;
+    }
+
+    .header-subtitle {
+        font-size: 0.9rem !important;
+    }
+
+    .header-nav {
+        flex-wrap: wrap;
+        margin: 5px !important;
+        gap: 5px !important;
+    }
+
+    .custom-menu-btn {
+        padding: 0.25rem 0.5rem !important;
+        font-size: 0.85rem !important;
+    }
+}
+
+/* Для очень маленьких экранов */
+@media (max-width: 480px) {
+    .mx-auto {
+        width: 95% !important;
+    }
+
+    .header-title {
+        font-size: clamp(1.5rem, 8vw, 2rem) !important;
+    }
+
+    .header-subtitle {
+        display: none; /* Скрываем подзаголовок на очень маленьких экранах */
+    }
+
+    .header-nav {
+        font-size: 0.8rem;
+    }
+}
+/* Стили для меню в хэдере */
 .nav-justified .nav-link,
 .nav-justified .dropdown {
     flex: 1 1 0px;
@@ -46,6 +145,7 @@
     color: #f8f9fa;
     background-color: transparent;
     text-decoration: none;
+    white-space: nowrap;
     transition: all 0.15s ease-in-out;
 }
 
@@ -53,6 +153,7 @@
 .custom-menu-btn:focus {
     font-weight: 700;
     color: #fff;
+    white-space: nowrap;
     background-color: #7d1414;
     transform: translateY(-1px);
     border: 1px solid #FF8C00;
@@ -121,7 +222,7 @@
 .min-vh-80 {
     min-height: 80vh;
 }
-
+/* Стили для поисковой строки */
 .search-form {
     margin: 15px 0;
 }
@@ -135,7 +236,7 @@
     border-color: #A52A2A;
     box-shadow: 0 0 0 0.2rem rgba(165, 42, 42, 0.25);
 }
-
+/* Стили для карточек и изображений */
 .product-image-container {
     display: flex;
     align-items: center;
@@ -166,8 +267,9 @@
     height: 100%;
     border: 3px solid #A52A2A;
     box-shadow:
-        0 4px 8px rgba(210, 180, 140, 0.4),
-        0 8px 16px rgba(210, 180, 140, 0.2);
+        0 4px 8px rgba(255, 255, 255, 1),
+        0 8px 16px rgba(210, 180, 140, 0.2),;
+        0 16px 24px rgba(255, 255, 255, 1);
     position: relative;
     transition: all 0.3s ease;
     background: white;
