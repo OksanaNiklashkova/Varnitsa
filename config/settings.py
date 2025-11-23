@@ -16,6 +16,11 @@ DEBUG = bool(os.getenv("DEBUG") == "True")
 
 ALLOWED_HOSTS = ["*"]
 
+CSRF_TRUSTED_ORIGINS = [
+    'https://*.cloudpub.ru',
+    'http://*.cloudpub.ru',
+]
+
 INSTALLED_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",

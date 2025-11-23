@@ -1,6 +1,6 @@
 name: Deploy Django App
 
-on: [push, pull_request]
+on: [pull_request]
 
 env:
   DOCKER_IMAGE: oksananiklashkova/varnitsa-web
@@ -106,6 +106,8 @@ jobs:
   deploy:
     needs: build-and-push
     runs-on: ubuntu-latest
+    # при деплое на сервер удалить строку ниже и заполнить переменные в secrets
+    if: ${{ false }}
 
     steps:
       - name: Check out code

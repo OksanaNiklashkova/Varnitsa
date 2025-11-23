@@ -30,38 +30,51 @@
 
 - Git, GitHub.
 ## Запуск сервера локально
-Склонируйте репозиторий проекта 
-```
-git clone https://github.com/OksanaNiklashkova/Varnitsa.git
-```
-Создайте .env файл с переменными по образцу.
+* Создайте папку для приложения и сохраните в нее проект (на странице проекта на GitHub https://github.com/OksanaNiklashkova/Varnitsa нажмите зеленую кнопку <> Code и выберите Download ZIP, распакуйте архив).
+* Создайте в этой папке .env файл с переменными по образцу из файла env.sample.
 Эти переменные заполните так:
-* DOMAIN=_
-* WEB_IMAGE=varnitsa-web-local
-* NGINX_IMAGE=varnitsa-nginx-local
 
-Две последние применяются при сборке контейнеров, но если нужные image не будут найдены, контейнеры будут собраны по инструкции из Dockerfile.
+- DOMAIN=localhost
+- WEB_IMAGE=varnitsa-web-local
+- NGINX_IMAGE=varnitsa-nginx-local
+- SECRET_KEY=django-insecure-rrr-rrrrrrrrrrrrrr-rrrrrrrrrrrrr-rrrrrrrrrrr-0-rrr
+- DEBUG=False
+- POSTGRES_DB=произвольно
+- POSTGRES_USER=произвольно
+- POSTGRES_PASSWORD=произвольно
+- POSTGRES_HOST=db
+- POSTGRES_PORT=5432
 
-Запустите сборку контейнеров `docker-compose up --build`
+Настройки почтового сервера можно не заполнять, если они не заданы, не будут отправляться письма с обращениями посетителей, но в тестовом режиме это не обязательно.
+* Установите Docker Desktop https://docs.docker.com/desktop/setup/install/windows-install/ и запустите его.
+* Проверьте, что Docker доступен в командной строке:
+```
+cd <путь до вашей папки с проектом>
+docker compose --version
+```
+* Запустите сборку контейнеров `docker compose up --build`
+* Проверьте, что все контейнеры работают `docker compose ps`
+Вы должны увидеть список из контейнеров: varnitsa_web, varnitsa_db, varnitsa_redis, nginx в статусе Up.
 
-Для начального заполнения базы данных нужно воспользоваться фикстурами, имеющимися в папке fixtures:
+* Для начального заполнения базы данных нужно воспользоваться фикстурами, имеющимися в папке fixtures:
 ~~~
-docker-compose run --rm web python manage.py loaddata fixtures/users.json
-docker-compose run --rm web python manage.py loaddata fixtures/product_categories.json
-docker-compose run --rm web python manage.py loaddata fixtures/products.json
-docker-compose run --rm web python manage.py loaddata fixtures/publications.json
-docker-compose run --rm web python manage.py loaddata fixtures/publication_photos.json
+docker compose run --rm varnitsa_web python manage.py loaddata fixtures/users.json
+docker compose run --rm varnitsa_web python manage.py loaddata fixtures/product_categories.json
+docker compose run --rm varnitsa_web python manage.py loaddata fixtures/products.json
+docker compose run --rm varnitsa_web python manage.py loaddata fixtures/publications.json
+docker compose run --rm varnitsa_web python manage.py loaddata fixtures/publication_photos.json
 ~~~
 Создайте superuser, если хотите авторизоваться в приложении и иметь доступ к CRUD продуктов и статей.
 
-После успешного запуска перейдите по адресу: http://localhost/
+После успешного запуска перейдите по адресу: http://localhost:8000/
 
 Не авторизованный пользователь может, подтвердив, что ему более 18 лет, просматривать все страницы сайта и отправлять сообщения на странице "Контакты" -> Форма обращения.
+* В рамках учебного проекта сервер развернут на базе CloudPub по адресу: https://weekly-manageable-tarpon.cloudpub.ru/
+
 
 ## Запуск сервера с помощью CI/CD на виртуальной машине
 #### Подготовка сервера.
 Создайте виртуальную машину, подключитесь к ней.
-* В рамках учебного проекта сервер развернут на базе VK Cloud по адресу: http://212.233.73.47/
 
 ```
 # Подключение к серверу
@@ -123,9 +136,7 @@ git clone https://github.com/OksanaNiklashkova/Varnitsa.git
 Сделайте в репозитории push или pull-request, это автоматически запустит тестирование, создание контейнера и деплой на ваш сервер.
 
 #### Проверка работоспособности
-Перейдите по IP-адресу вашего сервера. Например:
-
-http://212.233.73.47/
+Перейдите по IP-адресу вашего сервера. 
 
 Современные браузеры оценивают http-протокол как менее безопасный, по сравнению с https.
 Если браузер выбрасывает сообщение о потенциальной небезопасности, нажмите "Посмотреть детали" => "Все равно перейти". 
