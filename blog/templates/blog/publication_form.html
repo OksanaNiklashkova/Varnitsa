@@ -1,0 +1,123 @@
+{% extends 'catalog/base.html' %}
+{% load static %}
+{% block background_class %}blog-background{% endblock %}
+{% block title %}
+{% if object %}Варница: редактирование статьи{% else %}Варница: новая статья{% endif %}
+{% endblock %}
+
+{% block content %}
+<div class="container" style="color: #A52A2A;">
+    <h2>{% if object %}Редактирование статьи{% else %}Новая статья{% endif %}</h2>
+
+    <form method="post" enctype="multipart/form-data" class="mt-4">
+        {% csrf_token %}
+
+        <!-- Основная форма -->
+        <div class="card mb-4">
+            <div class="card-header" style="background-color: #FFEAA7;">
+                <h5>Основная информация</h5>
+            </div>
+            <div class="card-body">
+                <div class="mb-3">
+                    <label for="{{ form.publication_type.id_for_label }}" class="form-label">
+                        <strong>{{ form.publication_type.label }}</strong>
+                    </label>
+                    {{ form.publication_type }}
+                    {% if form.publication_type.help_text %}
+                    <div class="form-text">{{ form.publication_type.help_text }}</div>
+                    {% endif %}
+                    {% if form.publication_type.errors %}
+                    <div class="text-danger">{{ form.publication_type.errors }}</div>
+                    {% endif %}
+                </div>
+
+                {% for field in form %}
+                {% if field.name != 'publication_type' %}
+                    <div class="mb-3">
+                        <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
+                        {{ field }}
+                        {% if field.errors %}
+                        <div class="text-danger">{{ field.errors }}</div>
+                        {% endif %}
+                    </div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Форма для нескольких фото -->
+        <div class="card mb-4">
+            <div class="card-header" style="background-color: #FFEAA7;">
+                <h5>Добавить фотографии (можно добавить до 4 фото)</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    {% for field in multiple_photo_form %}
+                    <div class="col-md-6 mb-3">
+                        <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
+                        {{ field }}
+                        {% if field.errors %}
+                        <div class="text-danger">{{ field.errors }}</div>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Существующие фото -->
+        {% if existing_photos %}
+        <div class="card mb-4">
+            <div class="card-header" style="background-color: #FFEAA7;">
+                <h5>Существующие фотографии</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    {% for photo in existing_photos %}
+                    <div class="col-md-3 mb-3">
+                        <div class="card">
+                            <img src="{{ photo.image.url }}" class="card-img-top" alt="{{ photo.caption }}" style="height: 150px; object-fit: cover;">
+                            <div class="card-body">
+                                <p class="card-text small">{{ photo.caption|default:"Без подписи" }}</p>
+                                <a href="{% url 'blog:photo_delete' photo.pk %}" class="btn btn-sm btn-danger" onclick="return confirm('Удалить фото?')">Удалить</a>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        <div class="d-flex gap-2">
+            <button type="submit" class="btn btn-success">
+                {% if object %}Обновить{% else %}Создать{% endif %} статью
+            </button>
+            <a href="{% url 'blog:publication_list' %}" class="btn btn-secondary">Отмена</a>
+        </div>
+    </form>
+</div>
+
+<!-- JS для динамического изменения формы -->
+<script>
+function togglePublicationType() {
+    const typeSelect = document.querySelector('#{{ form.publication_type.id_for_label }}');
+    const photoSection = document.querySelector('.card:has(.card-header:contains("фотографии"))');
+
+    if (typeSelect.value === 'small') {
+        // Для заметок скрыть секцию с фото
+        if (photoSection) {
+            photoSection.style.opacity = '0.6';
+        }
+    } else {
+        // Для статей показываем все секции
+        if (photoSection) {
+            photoSection.style.opacity = '1';
+        }
+    }
+}
+
+// Инициализация при загрузке
+document.addEventListener('DOMContentLoaded', togglePublicationType);
+</script>
+{% endblock %}

@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Варница{% endblock %}</title>
+    {% load static %}
+    <link rel="icon" type="image/png" href="{% static 'favicon/favicon-96x96.png' %}" sizes="96x96">
+    <link rel="icon" type="image/svg+xml" href="{% static 'favicon/favicon.svg' %}">
+    <link rel="shortcut icon" href="{% static 'favicon/favicon.ico' %}">
+    <link rel="apple-touch-icon" sizes="180x180" href="{% static 'favicon/apple-touch-icon.png' %}">
+    <link rel="manifest" href="{% static 'favicon/site.webmanifest' %}">
+    <meta name="msapplication-TileColor" content="#da532c">
+    <meta name="theme-color" content="#ffffff">
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@700&family=Raleway:wght@500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/base.css' %}">
+
+    <!-- Динамические стили для фона -->
+    <style>
+        .main-background {
+            background-image: url("{% static 'images/catalog/111.png' %}");
+        }
+
+        .age-gate-background {
+            background-image: url("{% static 'images/users/222.jpg' %}");
+        }
+
+        .blog-background {
+            background-image: url("{% static 'images/catalog/444.jpg' %}");
+        }
+        .header-with-wave::before {
+            background-image: url('{% static 'images/catalog/wave.png' %}');
+            background-size: cover;
+            opacity: 0.4;
+        }
+        .footer-background {
+            background-image: url("{% static 'images/catalog/footer.png' %}");
+        }
+        /* фон для карточек товара */
+        .product-image-container {
+            background: url("{% static 'images/catalog/424.jpg' %}");
+            min-height: 200px;
+        }
+        /* фон для картинок в новостях */
+        .news_image {
+            background: url("{% static 'images/catalog/fon_card.jpg' %}");
+            min-height: 90px;
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        .header-with-wave {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+        }
+
+        .main-content {
+            flex: 1;
+            margin-top: 240px; /* значение по умолчанию */
+            transition: margin-top 0.3s ease;
+        }
+
+        /* Медиа-запросы для адаптивности */
+        @media (max-width: 1200px) {
+            .main-content {
+                margin-top: 200px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                margin-top: 180px;
+            }
+        }
+    </style>
+</head>
+<body class="background-base {% block background_class %}main-background{% endblock %}">
+    {% include 'catalog/header.html' %}
+
+    <main class="main-content">
+        <div class="container mt-4">
+            {% block content %}
+            {% endblock %}
+        </div>
+
+        <div style="height: 20px;"></div>
+        {% include 'catalog/footer.html' %}
+    </main>
+
+    <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+    const header = document.querySelector('.header-with-wave');
+    const scrollThreshold = 100; // Прокрутка в пикселях для активации компактного режима
+
+    function handleScroll() {
+        if (window.scrollY > scrollThreshold || window.innerWidth <= 768) {
+            header.classList.add('compact');
+        } else {
+            header.classList.remove('compact');
+        }
+
+        // Обновляем отступ основного контента
+        updateMainMargin();
+    }
+
+    function handleResize() {
+        // На мобильных всегда компактный режим
+        if (window.innerWidth <= 768) {
+            header.classList.add('compact');
+        } else {
+            // На десктопе проверяем прокрутку
+            if (window.scrollY > scrollThreshold) {
+                header.classList.add('compact');
+            } else {
+                header.classList.remove('compact');
+            }
+        }
+        updateMainMargin();
+    }
+
+    function updateMainMargin() {
+        const main = document.querySelector('.main-content');
+        if (main && header) {
+            const headerHeight = header.offsetHeight;
+            main.style.marginTop = (headerHeight + 10) + 'px';
+        }
+    }
+
+    // Инициализация
+    handleResize();
+    handleScroll();
+
+    // Слушатели событий
+    window.addEventListener('scroll', handleScroll);
+    window.addEventListener('resize', handleResize);
+
+    // Дополнительные вызовы для надежности
+    setTimeout(handleResize, 100);
+    window.addEventListener('load', handleResize);
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,93 @@
+{% extends 'catalog/base.html' %}
+{% load static %}
+
+{% block title %}Результаты поиска{% endblock %}
+
+{% block content %}
+<div class="container" style="color: #A52A2A;">
+    <h1 class="text-center mb-4">Результаты поиска</h1>
+
+    <!-- Поисковая строка -->
+    {% include 'catalog/search_form.html' %}
+
+    {% if query %}
+        <div class="alert alert-info">
+            <strong>По запросу "{{ query }}" найдено: {{ results_count }} результатов</strong>
+        </div>
+    {% endif %}
+
+    {% if search_results %}
+        <div class="search-results">
+            {% for result in search_results %}
+                <div class="search-item mb-4 p-3 border rounded" style="border: solid 1px #A52A2A; background: rgba(210, 180, 140, 0.5);">
+                    {% if result.model_type == 'product' %}
+                        <!-- продукты -->
+                        <div class="row">
+                            <div class="col-md-2">
+                                <img src="{{ result.image.url }}"
+                                     alt="{{ result.product_name }}"
+                                     class="img-fluid rounded"
+                                     style="max-height: 100px; object-fit: cover;">
+                            </div>
+                            <div class="col-md-10">
+                                <h5>
+                                    <a href="{% url 'catalog:product' result.pk %}"
+                                       style="color: #A52A2A;">
+                                        {{ result.product_name }}
+                                    </a>
+                                </h5>
+                                {% if result.trade_mark %}
+                                    <p class="text-muted">ТМ: {{ result.trade_mark }}</p>
+                                {% endif %}
+                                {% if result.specification %}
+                                    <p class="text-truncate">{{ result.specification }}</p>
+                                {% endif %}
+                                <span class="badge" style="background: #A52A2A; color: white;">Продукт</span>
+                            </div>
+                        </div>
+
+                    {% elif result.model_type == 'publication' %}
+                        <!-- публикации -->
+                        <div class="row">
+                            <div class="col-md-2">
+                                <img src="{{ result.preview.url }}"
+                                     alt="{{ result.title }}"
+                                     class="img-fluid rounded"
+                                     style="max-height: 100px; object-fit: cover;">
+                            </div>
+                            <div class="col-md-10">
+                                <h5>
+                                    <a href="{% url 'blog:publication_detail' result.pk %}"
+                                       style="color: #A52A2A;">
+                                        {{ result.title }}
+                                    </a>
+                                </h5>
+                                {% if result.rubric %}
+                                    <p class="text-muted">Рубрика: {{ result.rubric }}</p>
+                                {% endif %}
+                                <p class="text-truncate">{{ result.text|truncatewords:30 }}</p>
+                                <span class="badge" style="background: #8B4513; color: white;">
+                                    {{ result.get_publication_type_display }}
+                                </span>
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+            {% endfor %}
+        </div>
+        {% include 'catalog/pagination.html' with page_obj=page_obj %}
+
+    {% else %}
+        {% if query %}
+            <div class="alert alert-warning text-center">
+                <h4>Ничего не найдено</h4>
+                <p>Попробуйте изменить поисковый запрос</p>
+            </div>
+        {% endif %}
+    {% endif %}
+
+    <div class="d-flex justify-content-center align-items-center mt-4 p-3">
+        <a href="{% url 'catalog:home' %}" class="btn btn-lg" style="background: #A52A2A; color: white;">← На главную</a>
+    </div>
+</div>
+{% endblock %}

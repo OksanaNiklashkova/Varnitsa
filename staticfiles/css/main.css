@@ -1,0 +1,13 @@
+@ import base.css
+/* Стили для карточек продуктов */
+.product-image-container {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 1rem !important;
+    min-height: 200px !important;
+    background:
+        radial-gradient(circle at 20% 80%, rgba(255, 107, 107, 0.8), transparent 70%),
+        linear-gradient(to bottom, white, #FFEAA7, #C04000, white) !important;
+    border: 3px solid red !important; /* Добавим красную рамку для видимости */
+}

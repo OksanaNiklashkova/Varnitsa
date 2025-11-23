@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Новое обращение</title>
+</head>
+<body>
+    <h2>Поступило новое обращение с сайта</h2>
+
+    <table style="width: 100%; border-collapse: collapse;">
+        <tr>
+            <td style="padding: 8px; border: 1px solid #ddd; background: #f9f9f9;"><strong>Тип обращения:</strong></td>
+            <td style="padding: 8px; border: 1px solid #ddd;">{{ contact.get_request_type_display }}</td>
+        </tr>
+        {% if contact.name %}
+        <tr>
+            <td style="padding: 8px; border: 1px solid #ddd; background: #f9f9f9;"><strong>Имя:</strong></td>
+            <td style="padding: 8px; border: 1px solid #ddd;">{{ contact.name }}</td>
+        </tr>
+        {% endif %}
+        <tr>
+            <td style="padding: 8px; border: 1px solid #ddd; background: #f9f9f9;"><strong>Email:</strong></td>
+            <td style="padding: 8px; border: 1px solid #ddd;">{{ contact.email }}</td>
+        </tr>
+        <tr>
+            <td style="padding: 8px; border: 1px solid #ddd; background: #f9f9f9;"><strong>Тема:</strong></td>
+            <td style="padding: 8px; border: 1px solid #ddd;">{{ contact.subject }}</td>
+        </tr>
+        <tr>
+            <td style="padding: 8px; border: 1px solid #ddd; background: #f9f9f9;"><strong>Сообщение:</strong></td>
+            <td style="padding: 8px; border: 1px solid #ddd;">{{ contact.message|linebreaks }}</td>
+        </tr>
+        <tr>
+            <td style="padding: 8px; border: 1px solid #ddd; background: #f9f9f9;"><strong>Дата:</strong></td>
+            <td style="padding: 8px; border: 1px solid #ddd;">{{ contact.created_at|date:"d.m.Y H:i" }}</td>
+        </tr>
+    </table>
+    {% if contact.attachments.all %}
+    <h3>Прикрепленные файлы ({{ contact.attachments.count }}):</h3>
+    <ul>
+        {% for attachment in contact.attachments.all %}
+        <li>{{ attachment.file.name }} ({{ attachment.file.size|filesizeformat }})</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+
+    <p style="margin-top: 20px;">
+        <a href="{{ site_url }}{% url 'admin:contacts_contactrequest_change' contact.id %}">
+            Открыть в админ-панели
+        </a>
+    </p>
+</body>
+</html>

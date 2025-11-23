@@ -1,0 +1,111 @@
+services:
+  varnitsa_web:
+    # проверяем есть ли готовый образ для веб-приложения
+    image: ${WEB_IMAGE}
+    # если нет, собираем на основе файлов проекта по инструкциям в Dockerfile
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: varnitsa_web
+    # собираем статику, применяем миграции и передаем в gunicorn
+    command: >
+      sh -c "python manage.py collectstatic --noinput &&
+             python manage.py migrate &&
+             gunicorn config.wsgi:application --bind 0.0.0.0:8000"
+    ports:
+      - "8000:8000"
+    volumes:
+      # монтируем тома для статики и медиа
+      - static_volume:/app/staticfiles
+      - media_volume:/app/media
+    depends_on:
+      # запуск контейнера после успешного запуска redis и чека правильной работы БД
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    env_file:
+      # забираем переменные окружения из .env
+      - ./.env
+    restart: unless-stopped
+    networks:
+      - app_network
+
+  db:
+    # собираем контейнер на основе публичного образа
+    image: postgres:17
+    container_name: varnitsa_db
+    env_file:
+      # забираем переменные окружения из .env
+      - ./.env
+    volumes:
+      # создаем том для данных БД, создаем нужные права для работы с БД
+      - postgres_data:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      # проверка, что БД работает перед запуском веб-приложения
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    restart: unless-stopped
+    networks:
+      - app_network
+
+  redis:
+    # собираем контейнер на основе публичного образа
+    image: "redis:alpine"
+    container_name: varnitsa_redis
+    restart: unless-stopped
+    networks:
+      - app_network
+
+  nginx:
+    image: ${NGINX_IMAGE}
+    # собираем контейнер на основе данных в папке nginx
+    build:
+      context: ./nginx
+    container_name: nginx
+    ports:
+      # открываем 80-й порт для http, 443 - для https
+      - "80:80"
+      - "443:443"
+    volumes:
+      # монтируем тома для статики, медиа и данных certbot
+      - static_volume:/app/staticfiles
+      - media_volume:/app/media
+      - ./data/certbot/conf:/etc/letsencrypt
+      - ./data/certbot/www:/var/www/certbot
+    depends_on:
+      - varnitsa_web
+    restart: unless-stopped
+    networks:
+      - app_network
+
+  certbot:
+    # собираем контейнер на основе публичного образа
+    image: certbot/certbot
+    container_name: certbot_service
+    volumes:
+      - ./data/certbot/conf:/etc/letsencrypt
+      - ./data/certbot/www:/var/www/certbot
+    command: >
+      sh -c "if [ "$DOMAIN" != "localhost" ] && [ -n "$DOMAIN" ]; then 
+               certonly --webroot -w /var/www/certbot --force-renewal --email ${CERTBOT_EMAIL} -d ${DOMAIN} -d www.${DOMAIN} --agree-tos;
+             else
+               echo 'Domain not set, skipping SSL certificate generation';
+             fi"
+    depends_on:
+      - nginx
+    restart: "no"
+    networks:
+      - app_network
+
+networks:
+  app_network:
+    driver: bridge
+
+volumes:
+  postgres_data:
+  static_volume:
+  media_volume:

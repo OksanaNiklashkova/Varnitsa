@@ -1,0 +1,31 @@
+{% extends 'catalog/base.html' %}
+{% load static %}
+{% block background_class %}blog-background{% endblock %}
+{% block title %}
+Варница: завод
+{% endblock %}
+
+{% block content %}
+{% include 'catalog/search_form.html' %}
+{% if user.is_authenticated %}
+<div class="row">
+    <a href="{% url 'blog:publication_create' %}" class="btn btn-lg btn-block" type="submit"
+       style="color: #A52A2A; box-shadow: 4px 4px 10px #A52A2A; margin-bottom: 10px; margin-top: 10px;">Новая заметка</a>
+</div>
+{% endif %}
+<div class="container" style="color: #A52A2A;">
+
+{% for publication in publications %}
+    {% if forloop.counter|divisibleby:2 %}
+        {% include 'blog/small_publication_card.html' with image_position='left' %}
+    {% else %}
+        {% include 'blog/small_publication_card.html' with image_position='right' %}
+    {% endif %}
+{% endfor %}
+    {% include 'catalog/pagination.html' %}
+    <!-- Кнопка назад -->
+    <div class="d-flex justify-content-center align-items-center mt-4 p-3">
+        <a href="{% url 'catalog:home' %}" class="btn btn-lg mt-3" style="background: #A52A2A; color: white;">← На главную</a>
+    </div>
+</div>
+{% endblock %}

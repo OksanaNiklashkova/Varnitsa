@@ -1,0 +1,67 @@
+{% extends 'catalog/base.html' %}
+{% load static %}
+
+{% block title %}Варница{% endblock %}
+{% block background_class %}main-background{% endblock %}
+{% block content %}
+{% include 'catalog/search_form.html' %}
+{% if user.is_authenticated %}
+<div class="row">
+    <a href="{% url 'blog:publication_create' %}" class="btn btn-lg btn-block" type="submit"
+       style="color: #A52A2A; box-shadow: 4px 4px 10px #A52A2A; margin-bottom: 10px; margin-top: 10px;">Создать новость</a>
+</div>
+{% endif %}
+{% include 'blog/news_publication_list.html' %}
+
+<div class="card border-2 rounded-4 shadow-sm mb-3 custom-card" style="border-color: #6D4C41; background: white;">
+
+    <div class="card-body p-4">
+        <div class="row align-items-start">
+            <!-- Изображение -->
+            <div class="col-md-5 col-lg-4 text-center mb-3 mb-md-0">
+                <img src="{% static 'images/catalog/all.png' %}"
+                     alt=""
+                     class="img-fluid rounded-3 shadow custom-image">
+            </div>
+             <!-- Текст -->
+            <div class="col-md-7 col-lg-8">
+                <div class="text-content ps-md-4">
+                    <p class="mb-3" style="color: #5D4037; font-size: 1.1rem; line-height: 1.5;">
+                        Пиво "Варница" - это сочетание современных решений и традиций пивоварения, проверенных веками.
+                    </p>
+
+                    <p class="mb-3" style="color: #5D4037; font-size: 1.1rem; line-height: 1.6;">
+                        Наши напитки - пиво, квас, лимонады, сидр - успели завоевать доверие и любовь потребителей не только в России, но и в других странах. Вы можете встретить пиво "Варница" на полках магазинов и в барах практически всех российских городов.
+                    </p>
+
+                    <p class="mb-0" style="color: #5D4037; font-size: 1.1rem; line-height: 1.6;">
+                        Широкий ассортимент готовой продукции в кегах, стеклянных и ПЭТ бутылках под торговыми марками «Варница», «Семь Пивоваров», «Buggel», «De Brogelonne» удовлетворят вкус как знатоков, так и любителей пива и безалкогольных напитков!
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card-body p-4">
+        <div class="row align-items-start">
+            <!-- Текст -->
+            <div class="col-md-7 col-lg-8">
+                <div class="text-content ps-md-4">
+                    <p class="mb-3" style="color: #5D4037; font-size: 1.1rem; line-height: 1.5;">
+                        Главной ценностью завода «Варница» является высокое качество готовых напитков. Натуральная сырьевая основа для производства напитков закупается у ведущих производителей России и зарубежья.
+                    </p>
+                    <p class="mb-0" style="color: #5D4037; font-size: 1.1rem; line-height: 1.6;">
+                        В процессах приготовления напитков завод «Варница» придерживается классических технологий. Например, для приготовления пива предприятие использует только воду, солод, дрожжи и хмель. Период брожения и дображивания пива составляет не менее 21 дня. А для приготовления лимонадов предприятие использует только воду и натуральные ингредиенты на соковой основе. Благодаря такому подходу мы создаем и производим яркие сорта напитков с натуральными запоминающимися вкусами и ароматами.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Изображение -->
+            <div class="col-md-5 col-lg-4 text-center mb-3 mb-md-0">
+                <img src="{% static 'images/catalog/Varnitsa-45.jpg' %}"
+                     alt=""
+                     class="img-fluid rounded-3 shadow custom-image">
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

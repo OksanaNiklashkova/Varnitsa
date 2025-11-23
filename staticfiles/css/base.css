@@ -1,0 +1,867 @@
+/* Базовые стили для фона */
+.background-base {
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+    min-height: 100vh;
+    position: relative;
+}
+
+.background-base::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(to bottom,
+        rgba(255, 255, 255, 0.3) 0%,
+        rgba(255, 255, 255, 0.05) 100%);
+    z-index: -1;
+    pointer-events: none;
+}
+
+/* Стили для header и footer */
+
+/* Стили для адаптивного хедера */
+.header-with-wave.compact {
+    padding: 0.25rem 0;
+}
+
+.header-main-content,
+.header-compact-content {
+    transition: all 0.3s ease;
+}
+
+.header-logo {
+    transition: all 0.3s ease;
+}
+
+.header-title {
+    transition: all 0.3s ease;
+}
+
+.header-subtitle {
+    transition: all 0.3s ease;
+    opacity: 1;
+}
+
+.header-nav {
+    transition: all 0.3s ease;
+}
+
+/* Стили для компактного режима */
+.header-with-wave.compact .header-main-content {
+    display: none !important;
+}
+
+.header-with-wave.compact .header-compact-content {
+    display: flex !important;
+}
+
+.header-with-wave.compact .header-nav {
+    margin: 5px !important;
+    gap: 5px !important;
+}
+
+/* Мобильные стили */
+@media (max-width: 768px) {
+    .header-main-content {
+        flex-direction: column !important;
+        text-align: center !important;
+        margin: 0.5rem 0 !important;
+    }
+
+    .logo {
+        margin: 0 0 0.5rem 0 !important;
+    }
+
+    .header-logo {
+        max-width: 120px !important;
+        height: auto !important;
+    }
+
+    .header-title {
+        font-size: clamp(2rem, 6vw, 3rem) !important;
+        margin-bottom: 0.25rem !important;
+    }
+
+    .header-subtitle {
+        font-size: 0.9rem !important;
+    }
+
+    .header-nav {
+        flex-wrap: wrap;
+        margin: 5px !important;
+        gap: 5px !important;
+    }
+
+    .custom-menu-btn {
+        padding: 0.25rem 0.5rem !important;
+        font-size: 0.85rem !important;
+    }
+}
+
+/* Для очень маленьких экранов */
+@media (max-width: 480px) {
+    .mx-auto {
+        width: 95% !important;
+    }
+
+    .header-title {
+        font-size: clamp(1.5rem, 8vw, 2rem) !important;
+    }
+
+    .header-subtitle {
+        display: none; /* Скрываем подзаголовок на очень маленьких экранах */
+    }
+
+    .header-nav {
+        font-size: 0.8rem;
+    }
+}
+/* Стили для меню в хэдере */
+.nav-justified .nav-link,
+.nav-justified .dropdown {
+    flex: 1 1 0px;
+    margin: 0px;
+}
+
+.nav-justified .dropdown > .nav-link {
+    width: 100%;
+}
+
+.custom-menu-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 1 1 0px;
+    padding: 0.75rem 1rem;
+    font-size: 1.25rem;
+    line-height: 1.5;
+    border: 1px solid #f8f9fa;
+    border-radius: 0.3rem;
+    color: #f8f9fa;
+    background-color: transparent;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: all 0.15s ease-in-out;
+}
+
+.custom-menu-btn:hover,
+.custom-menu-btn:focus {
+    font-weight: 700;
+    color: #fff;
+    white-space: nowrap;
+    background-color: #7d1414;
+    transform: translateY(-1px);
+    border: 1px solid #FF8C00;
+    box-shadow:
+        inset 0 0 0 1px #FF8C00,
+        0 0 0 2px #570707,
+        0 2px 4px rgba(165, 42, 42, 0.3);
+}
+
+.custom-menu-btn:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 3px rgba(0, 0, 0, 0.1);
+}
+
+.dropdown-menu {
+    background-color: #EFEBE9;
+    border: 1px solid #8D6E63;
+}
+
+.dropdown-item {
+    color: #3E2723 !important;
+    background-color: #EFEBE9;
+    border-bottom: 1px solid #D7CCC8;
+    padding: 12px 20px;
+    font-weight: 500;
+    transition: all 0.2s ease-in-out;
+}
+
+.dropdown-item:hover,
+.dropdown-item:focus {
+    color: #FFFFFF;
+    background-color: #8D6E63;
+    transform: translateX(5px);
+}
+
+.dropdown-item:active {
+    color: #FFFFFF;
+    background-color: #6D4C41;
+}
+
+.dropdown-item:last-child {
+    border-bottom: none;
+}
+
+.header-with-wave::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+}
+
+.warning-alcohol__wrapper {
+    background: #fdc52a;
+    bottom: 0;
+    width: 100%;
+    text-align: center;
+    text-transform: uppercase;
+    font-size: 35px;
+    padding: 10px 0;
+    z-index: 10000;
+}
+
+.min-vh-80 {
+    min-height: 80vh;
+}
+/* Стили для поисковой строки */
+.search-form {
+    margin: 15px 0;
+}
+
+.search-form .form-control {
+    border: 2px solid #A52A2A;
+    border-right: none;
+}
+
+.search-form .form-control:focus {
+    border-color: #A52A2A;
+    box-shadow: 0 0 0 0.2rem rgba(165, 42, 42, 0.25);
+}
+/* Стили для карточек и изображений */
+.product-image-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    min-height: 200px;
+    background:
+        radial-gradient(circle at 20% 80%, rgba(255, 107, 107, 0.8), transparent 70%),
+        linear-gradient(to bottom, white, #FFEAA7, #C04000, white);
+    border: 1px solid #6D4C41;
+}
+
+/* Одинаковая высота карточек */
+.product-card {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Контейнер для карточки */
+.custom-card {
+    height: 100%;
+    border: 3px solid #6D4C41;
+}
+
+/* Контейнер для новостной карточки */
+.custom-card-news {
+    height: 100%;
+    border: 3px solid #A52A2A;
+    box-shadow:
+        0 4px 8px rgba(255, 255, 255, 1),
+        0 8px 16px rgba(210, 180, 140, 0.2),;
+        0 16px 24px rgba(255, 255, 255, 1);
+    position: relative;
+    transition: all 0.3s ease;
+    background: white;
+    overflow: visible; /* Разрешаем свечению выходить за границы */
+}
+
+/* Обертка для создания изолированного контекста */
+.custom-card-news::before {
+    content: '';
+    position: absolute;
+    top: -10px;
+    left: -10px;
+    right: -10px;
+    bottom: -10px;
+    background: linear-gradient(
+        45deg,
+        #A52A2A 0%,
+        #D2B48C 25%,
+        #FFD700 50%,
+        #D2B48C 75%,
+        #A52A2A 100%
+    );
+    border-radius: 15px;
+    z-index: -1; /* Помещаем ПОД карточку */
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    filter: blur(8px); /* Добавляем размытие для эффекта свечения */
+}
+
+/* Пульсация рамки при наведении */
+.custom-card-news::before {
+    opacity: 0.8;
+    animation: border-pulse 2s infinite;
+}
+
+/* Анимация пульсации рамки */
+@keyframes border-pulse {
+    0% {
+        transform: scale(1);
+        opacity: 0.6;
+    }
+    50% {
+        transform: scale(1.02);
+        opacity: 0.9;
+    }
+    100% {
+        transform: scale(1);
+        opacity: 0.6;
+    }
+}
+
+/* Контейнер для контента карточки */
+.product-card-body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Контейнер для характеристик занимает оставшееся пространство */
+.flex-grow-1 {
+    flex: 1;
+}
+
+/* Изображения адаптивные */
+.product-image {
+    max-height: 200px;
+    width: auto;
+    object-fit: contain;
+}
+
+.product-image-container {
+    min-height: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+ .publication-content img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+    margin: 10px 0;
+}
+
+.publication-content p {
+    margin-bottom: 1rem;
+}
+
+.publication-content ul, .publication-content ol {
+    padding-left: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+custom-image.volume-shadow {
+    box-shadow:
+        0 4px 8px rgba(210, 180, 140, 0.4),
+        0 8px 16px rgba(210, 180, 140, 0.2);
+}
+/* Кнопка подробнее в карточке */
+
+.product-card-hover {
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.product-card-hover:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+.product-card-hover:hover .cup-pulse-btn {
+    animation: cupPulse 2s infinite;
+    background-color: rgba(165, 42, 42, 0.1);
+}
+
+.product-card-hover:hover .cup-pulse-btn img {
+    transform: rotate(-5deg) scale(1.15);
+}
+
+@keyframes cupPulse {
+    0% {
+        box-shadow: 0 0 0 0 rgba(165, 42, 42, 0.3);
+    }
+    50% {
+        box-shadow: 0 0 0 6px rgba(165, 42, 42, 0.1);
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba(165, 42, 42, 0);
+    }
+}
+
+.pulse-cup-btn {
+    display: inline-block;
+    border-radius: 10px;
+    padding: 6px;
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+.pulse-cup-btn:hover {
+    animation: pulse 1s infinite;
+    background-color: rgba(165, 42, 42, 0.15);
+}
+
+.pulse-cup-btn:hover img {
+    transform: scale(1.15);
+}
+
+@keyframes pulse {
+    0% {
+        box-shadow: 0 0 0 0 rgba(165, 42, 42, 0.4);
+    }
+    70% {
+        box-shadow: 0 0 0 10px rgba(165, 42, 42, 0);
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba(165, 42, 42, 0);
+    }
+}
+
+.pulse-cup-btn img {
+    height: 50px;
+    width: auto;
+    transition: transform 0.3s ease;
+}
+
+.contact-form-container {
+    background: rgba(210, 180, 140, 0.1);
+    border: 2px solid #8B4513;
+    border-radius: 10px;
+    padding: 30px;
+    margin: 20px 0;
+    backdrop-filter: blur(5px);
+}
+
+.contacts-page {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 20px 20px;
+}
+
+/* Заголовки */
+.contact-title {
+    font-size: 3rem;
+    font-weight: 700;
+    color: #8B4513;
+    margin-bottom: 1rem;
+    text-shadow: 2px 2px 4px rgba(139, 69, 19, 0.2);
+}
+
+.contact-divider {
+    width: 100px;
+    height: 4px;
+    background: linear-gradient(90deg, #8B4513, #A0522D);
+    margin: 0 auto;
+    border-radius: 2px;
+}
+
+/* Двухколоночная структура */
+.contact-layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+    align-items: start;
+    margin-top: 40px;
+}
+
+.contact-column,
+.reasons-column {
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+}
+
+/* Общие стили для карточек */
+.contact-card,
+.reasons-card {
+    display: flex;
+    align-items: flex-start;
+    background: rgba(210, 180, 140, 0.1);
+    border: 2px solid #8B4513;
+    border-radius: 15px;
+    padding: 30px;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 8px 32px rgba(139, 69, 19, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.contact-card:hover,
+.reasons-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 40px rgba(139, 69, 19, 0.2);
+}
+
+.contact-icon {
+    font-size: 2rem;
+    color: #8B4513;
+    margin-right: 20px;
+    min-width: 40px;
+    text-align: center;
+    margin-top: 5px;
+}
+
+.contact-details h3,
+.reasons-content h3 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #8B4513;
+    margin-bottom: 15px;
+}
+
+.contact-text-large {
+    font-size: 1.2rem;
+    line-height: 1.6;
+    color: #5D4037;
+    margin: 0;
+}
+
+/* Стили для телефонов */
+.phone-numbers {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.contact-phone {
+    font-size: 1.2rem;
+    color: #8B4513;
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.3s ease;
+    display: block;
+}
+
+.contact-phone:hover {
+    color: #A0522D;
+    text-decoration: underline;
+}
+
+.contact-email {
+    font-size: 1.2rem;
+    color: #8B4513;
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+
+.contact-email:hover {
+    color: #A0522D;
+    text-decoration: underline;
+}
+
+/* Стили для блока причин */
+.reasons-card {
+    flex-direction: column;
+    align-items: stretch;
+}
+
+.reasons-content {
+    flex: 1;
+}
+
+.reasons-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.reason-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+}
+
+.reason-icon {
+    font-size: 1.5rem;
+    color: #8B4513;
+    line-height: 1.4;
+    min-width: 20px;
+}
+
+.reason-text {
+    font-size: 1.1rem;
+    line-height: 1.5;
+    color: #5D4037;
+    font-weight: 500;
+    flex: 1;
+}
+
+/* Кнопка */
+.contact-action-section {
+    width: 100%;
+    margin-bottom: 10px 0;
+}
+
+.btn-contact-main {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+    background: rgba(210, 180, 140, 0.8);
+    color: #8B4513;
+    font-size: 1.6rem;
+    font-weight: 600;
+    padding: 20px 40px;
+    border-radius: 8px;
+    text-decoration: none;
+    box-shadow: 0 8px 25px rgba(139, 69, 19, 0.4);
+    transition: all 0.3s ease;
+    border: 2px solid #8B4513;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    width: 100%;
+}
+
+.btn-contact-main::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+    transition: left 0.5s;
+}
+
+.btn-contact-main:hover::before {
+    left: 100%;
+}
+
+.btn-contact-main:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 15px 35px rgba(139, 69, 19, 0.6);
+    color: #8B4513;;
+    text-decoration: none;
+}
+
+.btn-contact-main:active {
+    transform: translateY(-1px);
+}
+
+.btn-icon {
+    font-size: 1.8rem;
+}
+
+/* Адаптивность */
+@media (max-width: 1024px) {
+    .contact-layout {
+        gap: 30px;
+    }
+
+    .contact-card,
+    .reasons-card {
+        padding: 25px;
+    }
+}
+
+@media (max-width: 768px) {
+    .contact-layout {
+        grid-template-columns: 1fr;
+        gap: 30px;
+    }
+
+    .contact-column {
+        order: 1;
+    }
+
+    .reasons-column {
+        order: 2;
+    }
+
+    .contacts-page {
+        padding: 20px 15px;
+    }
+
+    .contact-title {
+        font-size: 2.2rem;
+    }
+
+    .contact-card,
+    .reasons-card {
+        flex-direction: column;
+        text-align: center;
+        padding: 25px 20px;
+    }
+
+    .contact-icon {
+        margin-right: 0;
+        margin-bottom: 15px;
+    }
+
+    .contact-text-large,
+    .contact-phone,
+    .contact-email,
+    .reason-text {
+        font-size: 1.1rem;
+    }
+
+    .reason-item {
+        flex-direction: column;
+        text-align: center;
+        gap: 8px;
+    }
+
+    .btn-contact-main {
+        font-size: 1.4rem;
+        padding: 18px 35px;
+    }
+}
+
+@media (max-width: 480px) {
+    .contact-title {
+        font-size: 1.8rem;
+    }
+
+    .contact-details h3,
+    .reasons-content h3 {
+        font-size: 1.3rem;
+    }
+
+    .contact-text-large,
+    .contact-phone,
+    .contact-email,
+    .reason-text {
+        font-size: 1rem;
+    }
+
+    .btn-contact-main {
+        font-size: 1.2rem;
+        padding: 15px 30px;
+    }
+
+    .contact-card,
+    .reasons-card {
+        padding: 20px 15px;
+    }
+}
+
+/* Стили для обычных полей */
+.form-control, .form-select {
+    background: rgba(255, 255, 255, 0.9);
+    border: 1px solid #8B4513;
+    width: 100%;
+}
+
+.form-control:focus, .form-select:focus {
+    background: rgba(255, 255, 255, 0.95);
+    border-color: #A0522D;
+    box-shadow: 0 0 0 0.2rem rgba(139, 69, 19, 0.25);
+}
+
+/* Стили для чекбоксов */
+.form-check-wrapper {
+    margin-bottom: 1.5rem !important;
+}
+
+.form-check {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 0;
+    margin-bottom: 0.5rem;
+}
+
+.form-check-input {
+    margin-top: 0.2rem;
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+}
+
+.form-check-input:checked {
+    background-color: #8B4513;
+    border-color: #8B4513;
+}
+
+.form-check-label {
+    font-weight: normal;
+    line-height: 1.4;
+    flex-grow: 1;
+}
+
+/* Стили для подсказок */
+.help-text {
+    margin-top: 0.25rem;
+}
+
+.form-text {
+    display: block;
+    font-size: 0.875em;
+    color: #6c757d !important;
+}
+
+/* Особые стили для подсказок чекбоксов */
+.form-check-wrapper .help-text {
+    margin-left: 28px; /* Отступ равный ширине чекбокса + gap */
+    margin-top: 0.25rem;
+}
+
+/* Стили для кнопок */
+.form-actions {
+    margin-top: 25px;
+    text-align: center;
+}
+
+.btn-success {
+    background-color: #8B4513;
+    border-color: #8B4513;
+}
+
+.btn-success:hover {
+    background-color: #A0522D;
+    border-color: #A0522D;
+}
+
+.alert-danger {
+    background-color: rgba(220, 53, 69, 0.1);
+    border-color: #dc3545;
+    color: #721c24;
+}
+
+/* Стили для поля с несколькими файлами */
+input[type="file"] {
+    padding: 8px;
+    background: rgba(255, 255, 255, 0.9);
+}
+
+.file-info {
+    margin-top: 5px;
+    font-size: 0.875em;
+    color: #6c757d;
+}
+
+/* Скрываем поля honeypot полностью */
+.honeypot, .timestamp {
+    display: none !important;
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+    .contact-form-container {
+        padding: 20px;
+        margin: 10px 0;
+    }
+
+    .form-check {
+        align-items: flex-start;
+    }
+
+    .form-check-wrapper .help-text {
+        margin-left: 0;
+        margin-top: 0.5rem;
+    }
+}

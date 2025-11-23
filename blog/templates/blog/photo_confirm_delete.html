@@ -1,0 +1,20 @@
+{% extends 'catalog/base.html' %}
+
+{% block title %}Варница: удаление фото{% endblock %}
+
+{% block content %}
+<h2>Удаление фото</h2>
+<div class="alert alert-danger d-flex align-items-center" role="alert">
+  <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Danger:"><use xlink:href="#exclamation-triangle-fill"/></svg>
+  <div>
+    <h5>Вы действительно хотите удалить фото?</h5>
+  </div>
+</div>
+
+<form method="post">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-secondary">Подтвердить</button>
+    <a href="{% url 'blog:publication_list' %}" class="btn btn-primary">Отмена</a>
+</form>
+
+{% endblock %}

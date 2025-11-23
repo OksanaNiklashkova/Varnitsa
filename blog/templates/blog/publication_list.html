@@ -1,0 +1,63 @@
+{% extends 'catalog/base.html' %}
+{% load static %}
+{% block background_class %}blog-background{% endblock %}
+{% block title %}
+Варница
+{% endblock %}
+
+{% block content %}
+{% include 'catalog/search_form.html' %}
+{% if user.is_authenticated %}
+<div class="row">
+    <a href="{% url 'blog:publication_create' %}" class="btn btn-lg btn-block" type="submit"
+       style="color: #A52A2A; box-shadow: 4px 4px 10px #A52A2A; margin-bottom: 10px; margin-top: 10px;">Новая статья</a>
+</div>
+{% endif %}
+<div class="container" style="color: #A52A2A;">
+
+<div class="row">
+    {% for publication in publications %}
+    <div class="col-12 mb-4">
+        <div class="card custom-card">
+            <div class="row g-0">
+                <!-- Изображение -->
+                <div class="col-md-4 col-lg-4">
+                    <div class="h-100 d-flex align-items-center justify-content-center p-3" style="background:
+                        radial-gradient(circle at 20% 80%, rgba(255, 107, 107, 0.8), transparent 70%),
+                        linear-gradient(to bottom, white, #FFEAA7, #C04000, white); min-height: 250px;">
+                        <a href="#"><img src="{{ publication.preview.url }}"
+                             class="img-fluid rounded-start"
+                             alt="{{ publication.title }}"
+                             style="max-height: 220px; width: auto; border: solid brown 2px;"></a>
+                    </div>
+                </div>
+                <!-- Контент -->
+                <div class="col-md-8 col-lg-8">
+                    <div class="card-body h-100 d-flex flex-column">
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <a href="{% url 'blog:publication_detail' publication.pk %}" style="text-decoration: none;"><h5 class="card-title" style="color: #A52A2A;">{{ publication.title }}</h5></a>
+                            <a href="{% url 'blog:publication_detail' publication.pk %}" class="btn btn-sm btn-warning">Читать статью</a>
+                        </div>
+
+                        <div class="flex-grow-1">
+                            {% if publication.rubric %}
+                            <p class="mb-1" style="color: #5D4037; font-weight: 500;">{{ publication.rubric}}</p>
+                            {% endif %}
+
+                            <div style="color: #5D4037; line-height: 1.5; font-size: 0.9rem;">
+                                {{ publication.text|linebreaks|truncatewords:100 }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+</div>
+    {% include 'catalog/pagination.html' %}
+<div class="d-flex justify-content-center align-items-center p-3">
+    <a href="{% url 'catalog:home' %}" class="btn btn-lg mt-2" style="background: #A52A2A; color: white;">← На главную</a>
+</div>
+{% endblock %}
